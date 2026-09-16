@@ -9,8 +9,9 @@ class RouletteWheel {
     if (!canvasId || !this.canvas) return;
     this.ctx = this.canvas.getContext('2d');
 
-    // Participantes na roleta
-    this.participants = this.loadParticipants();
+    // A roleta começa vazia e só recebe nomes por ação explícita do administrador.
+    this.participants = [];
+    localStorage.removeItem('barbeiro_roulette_participants');
 
     // Paleta de cores para as fatias (Gradientes e contrastes em tons de azul)
     this.sliceColors = [

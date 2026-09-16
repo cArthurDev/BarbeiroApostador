@@ -722,6 +722,304 @@ button {
   padding-top: 18px;
 }
 
+.tip-form-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, rgba(13, 31, 70, 0.9), rgba(7, 15, 34, 0.86));
+}
+
+.tip-form-card::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  content: '';
+  background: linear-gradient(90deg, var(--blue-vibrant), var(--color-success), var(--accent-gold));
+}
+
+.tip-form-card .card-header {
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(0, 162, 255, 0.18);
+}
+
+.tip-form-card .header-icon {
+  color: var(--color-success);
+  background: rgba(0, 230, 118, 0.12);
+  border-color: rgba(0, 230, 118, 0.35);
+}
+
+.tip-form-card .btn-primary {
+  background: linear-gradient(135deg, #00b96b, #007f9e);
+}
+
+.tip-form-card .btn-primary:hover {
+  background: linear-gradient(135deg, #00df82, #009fca);
+}
+
+.tip-list-card {
+  border-color: rgba(0, 162, 255, 0.35);
+  background: linear-gradient(145deg, rgba(11, 27, 60, 0.88), rgba(6, 14, 32, 0.84));
+}
+
+.tip-list-card .card-header {
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(0, 162, 255, 0.18);
+}
+
+.tips-table tbody tr {
+  animation: tipRowIn 0.35s ease both;
+}
+
+.tips-table tbody tr:first-child {
+  background: rgba(0, 230, 118, 0.08);
+}
+
+.tips-table tbody tr:first-child td {
+  border-bottom-color: rgba(0, 230, 118, 0.2);
+}
+
+.tip-celebration {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 10001;
+  display: flex;
+  width: min(360px, calc(100vw - 32px));
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  padding: 26px 24px 24px;
+  border: 1px solid rgba(255, 196, 0, 0.72);
+  border-radius: var(--radius-lg);
+  color: #fff;
+  background: radial-gradient(circle at 50% 42%, rgba(140, 94, 0, 0.24), transparent 42%), linear-gradient(145deg, rgba(33, 25, 8, 0.98), rgba(5, 17, 34, 0.98));
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.65), 0 0 42px rgba(255, 196, 0, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -42%) scale(0.82);
+  overflow: hidden;
+}
+
+.tip-celebration.show {
+  animation: tipCelebrationIn 3.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.tip-jackpot-flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(255, 196, 0, 0.32);
+  filter: blur(26px);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.25);
+}
+
+.tip-celebration.show .tip-jackpot-flash {
+  animation: jackpotFlash 1.1s ease-out both;
+}
+
+.tip-celebration-burst {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 62px;
+  height: 62px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+  border: 2px solid var(--accent-gold);
+  border-radius: 50%;
+  color: var(--accent-gold);
+  background: rgba(255, 196, 0, 0.14);
+  box-shadow: 0 0 0 10px rgba(255, 196, 0, 0.06), 0 0 30px rgba(255, 196, 0, 0.45);
+  font-size: 1.65rem;
+  animation: tipIconPulse 0.8s ease-out both;
+}
+
+.tip-celebration-kicker {
+  position: relative;
+  z-index: 2;
+  color: var(--accent-gold);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.tip-celebration-kicker i {
+  font-size: 0.58rem;
+  vertical-align: 1px;
+}
+
+.tip-celebration-label {
+  position: relative;
+  z-index: 2;
+  color: var(--color-success);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.tip-celebration strong {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font: 800 1.35rem 'Outfit', sans-serif;
+}
+
+.tip-celebration > span:last-child {
+  position: relative;
+  z-index: 2;
+  color: var(--accent-gold);
+  font: 700 1.15rem 'Outfit', sans-serif;
+}
+
+.tip-casino-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 174px;
+  height: 174px;
+  border: 1px dashed rgba(255, 196, 0, 0.55);
+  border-radius: 50%;
+  box-shadow: 0 0 0 8px rgba(255, 196, 0, 0.04), inset 0 0 25px rgba(0, 162, 255, 0.16);
+  transform: translate(-50%, -50%);
+  animation: casinoRingSpin 4.2s linear infinite;
+}
+
+.tip-casino-ring::before,
+.tip-casino-ring::after {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  content: '';
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--color-danger);
+  box-shadow: 0 0 9px rgba(255, 51, 102, 0.8);
+}
+
+.tip-casino-ring::before { top: 15px; left: 30px; }
+.tip-casino-ring::after { right: 25px; bottom: 18px; background: var(--blue-vibrant); }
+
+.tip-casino-card,
+.tip-casino-chip {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.tip-casino-card {
+  top: 50%;
+  width: 34px;
+  height: 46px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  color: var(--color-danger);
+  background: #fff;
+  font-size: 1rem;
+}
+
+.tip-casino-card-left { left: 38px; transform: rotate(-22deg); }
+.tip-casino-card-right { right: 38px; color: var(--blue-primary); transform: rotate(22deg); }
+
+.tip-casino-chip {
+  width: 38px;
+  height: 38px;
+  border: 4px dashed rgba(255, 255, 255, 0.82);
+  border-radius: 50%;
+  color: #fff;
+  background: var(--color-danger);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+  font: 800 0.62rem 'Outfit', sans-serif;
+}
+
+.tip-casino-chip-left { bottom: 30px; left: 42px; }
+.tip-casino-chip-right { right: 42px; bottom: 30px; background: var(--blue-primary); }
+
+.tip-casino-sparks {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.tip-casino-sparks i {
+  position: absolute;
+  color: var(--accent-gold);
+  opacity: 0;
+  text-shadow: 0 0 10px rgba(255, 196, 0, 0.8);
+}
+
+.tip-casino-sparks i:nth-child(1) { top: 18%; left: 22%; font-size: 0.7rem; }
+.tip-casino-sparks i:nth-child(2) { top: 12%; right: 28%; font-size: 1rem; }
+.tip-casino-sparks i:nth-child(3) { top: 46%; left: 10%; font-size: 0.55rem; }
+.tip-casino-sparks i:nth-child(4) { top: 42%; right: 11%; font-size: 0.65rem; }
+.tip-casino-sparks i:nth-child(5) { bottom: 18%; left: 25%; font-size: 0.8rem; }
+.tip-casino-sparks i:nth-child(6) { right: 24%; bottom: 17%; font-size: 0.55rem; }
+
+.tip-celebration.show .tip-casino-sparks i {
+  animation: sparkPop 1.4s ease-out both;
+}
+
+.tip-celebration.show .tip-casino-sparks i:nth-child(2) { animation-delay: 0.1s; }
+.tip-celebration.show .tip-casino-sparks i:nth-child(3) { animation-delay: 0.18s; }
+.tip-celebration.show .tip-casino-sparks i:nth-child(4) { animation-delay: 0.24s; }
+.tip-celebration.show .tip-casino-sparks i:nth-child(5) { animation-delay: 0.3s; }
+.tip-celebration.show .tip-casino-sparks i:nth-child(6) { animation-delay: 0.36s; }
+
+.tip-celebration.show .tip-casino-card-left,
+.tip-celebration.show .tip-casino-card-right,
+.tip-celebration.show .tip-casino-chip-left,
+.tip-celebration.show .tip-casino-chip-right {
+  animation: casinoObjectIn 0.8s 0.12s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes tipRowIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tipCelebrationIn {
+  0% { opacity: 0; transform: translate(-50%, -42%) scale(0.82); }
+  12%, 78% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -56%) scale(0.96); }
+}
+
+@keyframes tipIconPulse {
+  0% { transform: scale(0.3) rotate(-18deg); }
+  70% { transform: scale(1.15) rotate(4deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+@keyframes casinoRingSpin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes casinoObjectIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.55) rotate(-18deg); }
+  to { opacity: 1; }
+}
+
+@keyframes jackpotFlash {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.25); }
+  25% { opacity: 0.95; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.45); }
+}
+
+@keyframes sparkPop {
+  0% { opacity: 0; transform: scale(0.2) rotate(-40deg); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.4) rotate(35deg); }
+}
+
 /* TABELA DE GORJETAS */
 .table-responsive {
   max-height: 480px;

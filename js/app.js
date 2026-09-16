@@ -39,6 +39,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const statTotalCount = document.getElementById('statTotalCount');
   const statMaxTip = document.getElementById('statMaxTip');
   const tipsCountBadge = document.getElementById('tipsCountBadge');
+  const tipCelebration = document.getElementById('tipCelebration');
+  const tipCelebrationName = document.getElementById('tipCelebrationName');
+  const tipCelebrationValue = document.getElementById('tipCelebrationValue');
 
   // Elementos da Gestão de Banca
   const bankTransactionForm = document.getElementById('bankTransactionForm');
@@ -348,6 +351,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (statMaxTip) statMaxTip.textContent = formatBRL(max);
   }
 
+  function showTipCelebration(name, value) {
+    if (!tipCelebration) return;
+    tipCelebrationName.textContent = name;
+    tipCelebrationValue.textContent = formatBRL(value);
+    tipCelebration.classList.remove('show');
+    void tipCelebration.offsetWidth;
+    tipCelebration.classList.add('show');
+    setTimeout(() => tipCelebration.classList.remove('show'), 2600);
+  }
+
   // Cadastrar gorjeta
   if (tipForm) {
     tipForm.addEventListener('submit', (e) => {
@@ -373,6 +386,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       tipsData.unshift(newTip); // Adiciona no início da lista
       saveTips();
       renderTips();
+      showTipCelebration(name, value);
 
       // Limpar formulário e focar
       tipNameInput.value = '';
@@ -1044,6 +1058,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       tipsData.unshift(newTip);
       saveTips();
       renderTips();
+      showTipCelebration(currentSelectedMember.name, val);
 
       closeMemberTipModal();
 
