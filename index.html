@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barbeiro Apostador</title>
+  
+  <!-- Fontes do Google: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Ícones FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Canvas de Fundo Animado -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- TELA DE LOGIN (Sem estética genérica de IA, direto e limpo) -->
+  <div id="loginOverlay" class="login-overlay active">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="brand-badge">
+          <i class="fa-solid fa-scissors"></i>
+          <span>ÁREA RESTRITA</span>
+        </div>
+        <h1 class="brand-title">Barbeiro Apostador</h1>
+        <p class="brand-subtitle">Insira suas credenciais para gerenciar gorjetas e roleta</p>
+      </div>
+
+      <form id="loginForm" class="login-form" autocomplete="off">
+        <div class="form-group">
+          <label for="username">Usuário</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-user-shield input-icon"></i>
+            <input 
+              type="text" 
+              id="username" 
+              placeholder="Digite o login" 
+              required 
+              autofocus
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input 
+              type="password" 
+              id="password" 
+              placeholder="Digite a senha" 
+              required 
+            />
+            <button type="button" id="togglePasswordBtn" class="toggle-password" title="Mostrar/Ocultar senha" aria-label="Mostrar ou ocultar senha">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="loginError" class="login-error hidden">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>Usuário ou senha inválidos.</span>
+        </div>
+
+        <button type="submit" class="btn-primary btn-block" id="btnLogin">
+          <span>Entrar no Sistema</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APLICAÇÃO PRINCIPAL (Após Login) -->
+  <div id="mainApp" class="main-app hidden">
+    <!-- Header Superior -->
+    <header class="app-header">
+      <div class="header-content container">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <i class="fa-solid fa-dice-d20"></i>
+          </div>
+          <div class="logo-text">
+            <h1 class="logo-title">Barbeiro Apostador</h1>
+            <span class="logo-status"><span class="status-dot"></span> Painel Ativo</span>
+          </div>
+        </div>
+
+        <!-- Navegação entre Abas -->
+        <nav class="nav-tabs" role="tablist">
+          <button class="tab-btn active" id="tabBtnTips" data-target="tabTips" role="tab" aria-selected="true">
+            <i class="fa-solid fa-money-bill-wave"></i>
+            <span>Gorjetas</span>
+            <span class="badge" id="tipsCountBadge">0</span>
+          </button>
+          <button class="tab-btn" id="tabBtnRoulette" data-target="tabRoulette" role="tab" aria-selected="false">
+            <i class="fa-solid fa-dharmachakra"></i>
+            <span>Roleta da Sorte</span>
+            <span class="badge" id="rouletteCountBadge">0</span>
+          </button>
+        </nav>
+
+        <!-- Botão Sair -->
+        <div class="user-action">
+          <button id="btnLogout" class="btn-logout" title="Sair da conta">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="hide-mobile">Sair</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="app-main container">
+      
+      <!-- ================= ABA 1: GORJETAS ================= -->
+      <section id="tabTips" class="tab-pane active">
+        <div class="tips-layout">
+          
+          <!-- Formulário de Cadastro -->
+          <div class="glass-card tip-form-card">
+            <div class="card-header">
+              <div class="header-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+              <div>
+                <h2>Registrar Gorjeta</h2>
+                <p>Cadastre o cliente e o valor concedido</p>
+              </div>
+            </div>
+
+            <form id="tipForm" class="tip-form">
+              <div class="form-group">
+                <label for="tipName">Nome da Pessoa</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-user input-icon"></i>
+                  <input 
+                    type="text" 
+                    id="tipName" 
+                    placeholder="Ex: João Silva" 
+                    required 
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="tipValue">Valor da Gorjeta (R$)</label>
+                <div class="input-wrapper">
+                  <span class="currency-prefix">R$</span>
+                  <input 
+                    type="number" 
+                    id="tipValue" 
+                    placeholder="0,00" 
+                    step="0.01" 
+                    min="0.01" 
+                    required 
+                  />
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary btn-block">
+                <i class="fa-solid fa-plus"></i>
+                <span>Adicionar à Lista</span>
+              </button>
+            </form>
+
+            <!-- Cards Resumo / Estatísticas Rápidas -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span class="stat-label">Total Arrecadado</span>
+                <span class="stat-val stat-money" id="statTotalTips">R$ 0,00</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Cadastrados</span>
+                <span class="stat-val" id="statTotalCount">0</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Maior Gorjeta</span>
+                <span class="stat-val stat-highlight" id="statMaxTip">R$ 0,00</span>
+              </div>
+            </div>
+
+            <!-- Ações Rápidas -->
+            <div class="tip-quick-actions">
+              <button type="button" id="btnSyncToRoulette" class="btn-secondary btn-block">
+                <i class="fa-solid fa-share-nodes"></i>
+                <span>Enviar Nomes para a Roleta</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Listagem das Gorjetas -->
+          <div class="glass-card tip-list-card">
+            <div class="card-header justify-between">
+              <div class="flex-align">
+                <div class="header-icon"><i class="fa-solid fa-list-check"></i></div>
+                <div>
+                  <h2>Lista de Gorjetas</h2>
+                  <p>Histórico das gorjetas registradas</p>
+                </div>
+              </div>
+
+              <div class="list-header-actions">
+                <button type="button" id="btnClearAllTips" class="btn-outline-danger" title="Limpar todas as gorjetas">
+                  <i class="fa-regular fa-trash-can"></i>
+                  <span class="hide-mobile">Limpar Lista</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tabela / Lista -->
+            <div class="table-responsive">
+              <table class="tips-table" id="tipsTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Pessoa</th>
+                    <th>Valor</th>
+                    <th>Horário</th>
+                    <th class="text-right">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="tipsTableBody">
+                  <!-- Inserido dinamicamente via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Estado Vazio -->
+            <div id="emptyTipsState" class="empty-state">
+              <div class="empty-icon"><i class="fa-solid fa-wallet"></i></div>
+              <h3>Nenhuma gorjeta registrada ainda</h3>
+              <p>Cadastre um nome e valor no formulário ao lado para começar a lista!</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= ABA 2: ROLETA ================= -->
+      <section id="tabRoulette" class="tab-pane">
+        <div class="roulette-layout">
+          
+          <!-- Área da Roleta -->
+          <div class="glass-card wheel-stage-card">
+            <div class="wheel-stage-header">
+              <h2>Roleta da Sorte</h2>
+              <p>Gire para sortear o participante premiado</p>
+            </div>
+
+            <div class="wheel-wrapper">
+              <!-- Indicador / Ponteiro Luminoso -->
+              <div class="wheel-pointer-container">
+                <div class="wheel-pointer" id="wheelPointer"></div>
+              </div>
+
+              <!-- Canvas da Roleta -->
+              <canvas id="rouletteCanvas" width="480" height="480"></canvas>
+
+              <!-- Botão Central Decorativo ou de Giro -->
+              <button type="button" id="btnSpinCenter" class="wheel-center-hub" title="Girar a Roleta">
+                <i class="fa-solid fa-play"></i>
+                <span>GIRAR</span>
+              </button>
+            </div>
+
+            <!-- Botões de Controle da Roleta -->
+            <div class="wheel-controls">
+              <button type="button" id="btnSpin" class="btn-spin">
+                <i class="fa-solid fa-arrows-rotate spin-icon"></i>
+                <span>GIRAR ROLETA</span>
+              </button>
+              
+              <button type="button" id="btnShuffle" class="btn-secondary" title="Embaralhar fatias">
+                <i class="fa-solid fa-shuffle"></i>
+                <span>Embaralhar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Painel de Gerenciamento de Participantes da Roleta -->
+          <div class="glass-card wheel-participants-card">
+            <div class="card-header justify-between">
+              <div class="flex-align">
+                <div class="header-icon"><i class="fa-solid fa-users-gear"></i></div>
+                <div>
+                  <h2>Participantes da Roleta</h2>
+                  <p>Quem está concorrendo no sorteio</p>
+                </div>
+              </div>
+              <button type="button" id="btnClearRoulette" class="btn-outline-danger btn-sm" title="Esvaziar roleta">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+
+            <!-- Adicionar Nome Direto na Roleta -->
+            <form id="addParticipantForm" class="add-participant-form">
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user-plus input-icon"></i>
+                <input 
+                  type="text" 
+                  id="directParticipantName" 
+                  placeholder="Novo participante..." 
+                  required 
+                />
+              </div>
+              <button type="submit" class="btn-primary" title="Adicionar à roleta">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </form>
+
+            <div class="sync-banner">
+              <button type="button" id="btnSyncFromTipsAgain" class="sync-banner-btn">
+                <i class="fa-solid fa-arrows-rotate"></i>
+                <span>Puxar nomes cadastrados nas gorjetas</span>
+              </button>
+            </div>
+
+            <div class="participants-section-header">
+              <span>Nomes na Roleta (<strong id="rouletteCountText">0</strong>)</span>
+              <span class="info-tip">Clique no <i class="fa-solid fa-xmark"></i> para retirar</span>
+            </div>
+
+            <!-- Lista de Itens com opção de Retirar -->
+            <div class="participants-list" id="participantsList">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
+
+            <!-- Estado Vazio da Roleta -->
+            <div id="emptyRouletteState" class="empty-state small">
+              <i class="fa-solid fa-user-slash empty-icon"></i>
+              <p>Nenhum participante adicionado.<br>Adicione acima ou puxe da lista de gorjetas.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Rodapé Oficial com Link da Twitch -->
+    <footer class="app-footer">
+      <div class="container footer-content">
+        <div class="footer-brand">
+          <i class="fa-solid fa-dice"></i>
+          <strong>Barbeiro Apostador</strong> &bull; Todos os direitos reservados
+        </div>
+
+        <div class="footer-twitch">
+          <a 
+            href="https://www.twitch.tv/barbeiroapostador01" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="twitch-link"
+            id="twitchLink"
+          >
+            <i class="fa-brands fa-twitch twitch-icon"></i>
+            <span class="twitch-label">Acompanhe na Twitch:</span>
+            <span class="twitch-handle">@barbeiroapostador01</span>
+            <i class="fa-solid fa-arrow-up-right-from-square external-icon"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODAL DO VENCEDOR (Sortudo da Roleta) -->
+  <div id="winnerModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-glow"></div>
+      <div class="trophy-badge">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <span class="winner-subtitle">TEMOS UM VENCEDOR!</span>
+      <h2 id="winnerName" class="winner-name">Nome do Vencedor</h2>
+      <p class="winner-desc">O participante foi sorteado com sucesso na roleta.</p>
+
+      <div class="modal-actions">
+        <button type="button" id="btnRemoveWinnerFromRoulette" class="btn-danger">
+          <i class="fa-solid fa-user-minus"></i>
+          <span>Retirar da Roleta</span>
+        </button>
+        <button type="button" id="btnKeepWinnerInRoulette" class="btn-primary">
+          <i class="fa-solid fa-check"></i>
+          <span>Manter na Roleta</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas de Confetes -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="js/background.js"></script>
+  <script src="js/roulette.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
