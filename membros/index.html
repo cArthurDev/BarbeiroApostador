@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro de Membros | Barbeiro Apostador</title>
-  
+
   <!-- Fontes do Google: Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
   <!-- Ícones FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  
+
   <!-- Estilos Principais -->
   <link rel="stylesheet" href="../css/style.css" />
 </head>
+
 <body class="members-page-body">
   <!-- Canvas de Fundo Animado -->
   <canvas id="bgCanvas"></canvas>
@@ -36,7 +40,8 @@
         </a>
 
         <div class="members-header-actions">
-          <a href="https://www.twitch.tv/barbeiroapostador01" target="_blank" rel="noopener noreferrer" class="btn-twitch-nav">
+          <a href="https://www.twitch.tv/barbeiroapostador01" target="_blank" rel="noopener noreferrer"
+            class="btn-twitch-nav">
             <i class="fa-brands fa-twitch"></i>
             <span>Live na Twitch</span>
           </a>
@@ -51,7 +56,7 @@
     <!-- Conteúdo Principal / Card de Cadastro -->
     <main class="container members-main-content">
       <div class="members-card-container">
-        
+
         <div class="glass-card member-register-card">
           <div class="register-header">
             <div class="brand-badge badge-twitch">
@@ -65,7 +70,8 @@
 
             <div class="twitch-rule-notice">
               <i class="fa-solid fa-shield-halved rule-icon"></i>
-              <span><strong>Regra Obrigatória:</strong> É permitido apenas <strong>1 cadastro por nick da Twitch</strong>.</span>
+              <span><strong>Regra Obrigatória:</strong> É permitido apenas <strong>1 cadastro por nick da
+                  Twitch</strong>.</span>
             </div>
           </div>
 
@@ -94,14 +100,8 @@
               <label for="memberName">Seu Nome Completo</label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-user input-icon"></i>
-                <input 
-                  type="text" 
-                  id="memberName" 
-                  name="name" 
-                  placeholder="Ex: Carlos Eduardo Silva" 
-                  required 
-                  autofocus
-                />
+                <input type="text" id="memberName" name="name" placeholder="Ex: Carlos Eduardo Silva" required
+                  autofocus />
               </div>
             </div>
 
@@ -110,13 +110,7 @@
               <label for="memberEmail">Seu Melhor E-mail</label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-envelope input-icon"></i>
-                <input 
-                  type="email" 
-                  id="memberEmail" 
-                  name="email" 
-                  placeholder="Ex: seuemail@gmail.com" 
-                  required 
-                />
+                <input type="email" id="memberEmail" name="email" placeholder="Ex: seuemail@gmail.com" required />
               </div>
             </div>
 
@@ -128,15 +122,11 @@
               </div>
               <div class="input-wrapper">
                 <i class="fa-brands fa-twitch input-icon twitch-field-icon"></i>
-                <input 
-                  type="text" 
-                  id="memberTwitch" 
-                  name="twitch" 
-                  placeholder="Ex: carlito_streamer ou @carlito" 
-                  required 
-                />
+                <input type="text" id="memberTwitch" name="twitch" placeholder="Ex: carlito_streamer ou @carlito"
+                  required />
               </div>
-              <small class="input-help">Digite sem espaços. Verificamos a disponibilidade do nick automaticamente.</small>
+              <small class="input-help">Digite sem espaços. Verificamos a disponibilidade do nick
+                automaticamente.</small>
             </div>
 
             <button type="submit" class="btn-primary btn-block btn-register-action" id="btnSubmitMember">
@@ -183,12 +173,8 @@
           <strong>Barbeiro Apostador</strong> &bull; Cadastro Oficial de Membros
         </div>
         <div class="footer-twitch">
-          <a 
-            href="https://www.twitch.tv/barbeiroapostador01" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="twitch-link"
-          >
+          <a href="https://www.twitch.tv/barbeiroapostador01" target="_blank" rel="noopener noreferrer"
+            class="twitch-link">
             <i class="fa-brands fa-twitch twitch-icon"></i>
             <span class="twitch-label">Acompanhe na Twitch:</span>
             <span class="twitch-handle">@barbeiroapostador01</span>
@@ -231,18 +217,35 @@
         if (errorBox) errorBox.classList.add('hidden');
       }
 
+      function maskEmail(email) {
+        if (!email || !email.includes('@')) return email;
+
+        const [user, domain] = email.split('@');
+
+        if (user.length <= 4) {
+          // Se o usuário tiver 4 ou menos caracteres, exibe o primeiro e oculta o restante
+          return `${user.charAt(0)}***@${domain}`;
+        }
+
+        // Mantém os 4 primeiros caracteres do usuário e mascara o restante
+        const visiblePart = user.substring(0, 4);
+        return `${visiblePart}***@${domain}`;
+      }
+
       function showSuccess(member) {
         hideError();
         if (successBox && successText) {
+          const maskedEmail = maskEmail(member.email);
+
           successText.innerHTML = `Parabéns, <strong>${member.name}</strong>! Seu cadastro foi concluído com sucesso.`;
           detailsBox.innerHTML = `
-            <div class="registered-chip">
-              <i class="fa-brands fa-twitch"></i> @${member.twitch}
-            </div>
-            <div class="registered-chip">
-              <i class="fa-regular fa-envelope"></i> ${member.email}
-            </div>
-          `;
+          <div class="registered-chip">
+            <i class="fa-brands fa-twitch"></i> @${member.twitch}
+          </div>
+          <div class="registered-chip">
+            <i class="fa-regular fa-envelope"></i> ${maskedEmail}
+          </div>
+        `;
           successBox.classList.remove('hidden');
           form.reset();
           twitchInput.classList.remove('input-invalid');
@@ -298,4 +301,5 @@
     });
   </script>
 </body>
+
 </html>
