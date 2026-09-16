@@ -20,7 +20,7 @@
   
   /* Cores Auxiliares */
   --accent-gold: #ffc400;
-  --color-success: #00e676;
+  --color-success: #00a2ff;
   --color-danger: #ff3366;
   --color-danger-hover: #e02454;
   
@@ -741,7 +741,7 @@ button {
 .stat-money {
   color: var(--color-success);
   font-size: 1.6rem;
-  text-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+  text-shadow: 0 0 15px rgba(0, 162, 255, 0.3);
 }
 
 .stat-highlight {
@@ -766,7 +766,7 @@ button {
   left: 0;
   height: 3px;
   content: '';
-  background: linear-gradient(90deg, var(--blue-vibrant), var(--color-success), var(--accent-gold));
+  background: linear-gradient(90deg, var(--blue-primary), var(--blue-glow), var(--blue-vibrant));
 }
 
 .tip-form-card .card-header {
@@ -776,16 +776,16 @@ button {
 
 .tip-form-card .header-icon {
   color: var(--color-success);
-  background: rgba(0, 230, 118, 0.12);
-  border-color: rgba(0, 230, 118, 0.35);
+  background: rgba(0, 162, 255, 0.12);
+  border-color: rgba(0, 162, 255, 0.35);
 }
 
 .tip-form-card .btn-primary {
-  background: linear-gradient(135deg, #00b96b, #007f9e);
+  background: linear-gradient(135deg, var(--blue-primary), var(--blue-glow));
 }
 
 .tip-form-card .btn-primary:hover {
-  background: linear-gradient(135deg, #00df82, #009fca);
+  background: linear-gradient(135deg, var(--blue-hover), var(--blue-vibrant));
 }
 
 .tip-list-card {
@@ -803,11 +803,11 @@ button {
 }
 
 .tips-table tbody tr:first-child {
-  background: rgba(0, 230, 118, 0.08);
+  background: rgba(0, 162, 255, 0.08);
 }
 
 .tips-table tbody tr:first-child td {
-  border-bottom-color: rgba(0, 230, 118, 0.2);
+  border-bottom-color: rgba(0, 162, 255, 0.2);
 }
 
 .tip-celebration {
@@ -2538,7 +2538,7 @@ button {
 .battle-fighter.winner-selected {
   color: #fff;
   border-color: var(--color-success);
-  background: rgba(0, 230, 118, 0.14);
+  background: rgba(0, 162, 255, 0.14);
 }
 
 .battle-fighter:disabled {
@@ -2685,8 +2685,8 @@ button {
 
 .bank-icon {
   color: var(--color-success);
-  background: rgba(0, 230, 118, 0.12);
-  border-color: rgba(0, 230, 118, 0.35);
+  background: rgba(0, 162, 255, 0.12);
+  border-color: rgba(0, 162, 255, 0.35);
 }
 
 .bank-balance-panel {
@@ -2695,10 +2695,10 @@ button {
   gap: 5px;
   padding: 20px;
   margin-bottom: 16px;
-  border: 1px solid rgba(0, 230, 118, 0.28);
+  border: 1px solid rgba(0, 162, 255, 0.28);
   border-radius: var(--radius-md);
-  background: linear-gradient(145deg, rgba(0, 100, 70, 0.28), rgba(4, 20, 30, 0.66));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 24px rgba(0, 230, 118, 0.08);
+  background: linear-gradient(145deg, rgba(0, 90, 200, 0.28), rgba(4, 20, 50, 0.66));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 24px rgba(0, 162, 255, 0.08);
 }
 
 .bank-balance-label,
@@ -2710,7 +2710,7 @@ button {
 .bank-balance-panel strong {
   color: var(--color-success);
   font: 800 2.15rem 'Outfit', sans-serif;
-  text-shadow: 0 0 18px rgba(0, 230, 118, 0.26);
+  text-shadow: 0 0 18px rgba(0, 162, 255, 0.26);
 }
 
 .bank-balance-panel strong.negative {
@@ -2858,7 +2858,7 @@ button {
 
 .withdrawal .bank-history-icon {
   color: var(--color-success);
-  background: rgba(0, 230, 118, 0.12);
+  background: rgba(0, 162, 255, 0.12);
 }
 
 .bank-history-details {
@@ -3133,8 +3133,8 @@ button {
 
 /* Caixa de Sucesso no Cadastro */
 .register-success-box {
-  background: rgba(0, 230, 118, 0.12);
-  border: 1px solid rgba(0, 230, 118, 0.4);
+  background: rgba(0, 162, 255, 0.12);
+  border: 1px solid rgba(0, 162, 255, 0.4);
   border-radius: var(--radius-md);
   padding: 18px;
   margin-bottom: 20px;
@@ -3159,7 +3159,7 @@ button {
 }
 
 .success-content p {
-  color: #c0f2d5;
+  color: #b8ddff;
   font-size: 0.88rem;
   line-height: 1.4;
   margin-bottom: 10px;
@@ -3172,8 +3172,8 @@ button {
 }
 
 .registered-chip {
-  background: rgba(0, 230, 118, 0.15);
-  border: 1px solid rgba(0, 230, 118, 0.3);
+  background: rgba(0, 162, 255, 0.15);
+  border: 1px solid rgba(0, 162, 255, 0.3);
   padding: 4px 10px;
   border-radius: var(--radius-full);
   font-size: 0.8rem;
