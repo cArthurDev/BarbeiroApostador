@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Membros | Barbeiro Apostador</title>
+  
+  <!-- Fontes do Google: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Ícones FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- Estilos Principais -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="members-page-body">
+  <!-- Canvas de Fundo Animado -->
+  <canvas id="bgCanvas"></canvas>
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="members-page-wrapper">
+    <!-- Header Simples e Elegante -->
+    <header class="members-header">
+      <div class="container members-header-content">
+        <a href="index.html" class="logo-area" title="Página Inicial">
+          <div class="logo-icon">
+            <i class="fa-solid fa-dice-d20"></i>
+          </div>
+          <div class="logo-text">
+            <h1 class="logo-title">Barbeiro Apostador</h1>
+            <span class="logo-status"><span class="status-dot"></span> Comunidade Oficial</span>
+          </div>
+        </a>
+
+        <div class="members-header-actions">
+          <a href="https://www.twitch.tv/barbeiroapostador01" target="_blank" rel="noopener noreferrer" class="btn-twitch-nav">
+            <i class="fa-brands fa-twitch"></i>
+            <span>Live na Twitch</span>
+          </a>
+          <a href="index.html" class="btn-secondary btn-sm" title="Acessar painel administrativo">
+            <i class="fa-solid fa-lock"></i>
+            <span>Painel</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Conteúdo Principal / Card de Cadastro -->
+    <main class="container members-main-content">
+      <div class="members-card-container">
+        
+        <div class="glass-card member-register-card">
+          <div class="register-header">
+            <div class="brand-badge badge-twitch">
+              <i class="fa-brands fa-twitch"></i>
+              <span>INSCRIÇÃO DE MEMBROS</span>
+            </div>
+            <h2 class="register-title">Cadastre-se na Tropa</h2>
+            <p class="register-subtitle">
+              Preencha seus dados para concorrer nos sorteios da Roleta, receber gorjetas e marcar presença na live!
+            </p>
+
+            <div class="twitch-rule-notice">
+              <i class="fa-solid fa-shield-halved rule-icon"></i>
+              <span><strong>Regra Obrigatória:</strong> É permitido apenas <strong>1 cadastro por nick da Twitch</strong>.</span>
+            </div>
+          </div>
+
+          <!-- Formulário -->
+          <form id="memberRegisterForm" class="member-register-form" autocomplete="off">
+            <!-- Mensagem de Erro -->
+            <div id="registerError" class="login-error hidden" role="alert">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span id="registerErrorText">Mensagem de erro</span>
+            </div>
+
+            <!-- Mensagem de Sucesso -->
+            <div id="registerSuccess" class="register-success-box hidden" role="alert">
+              <div class="success-icon-badge">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <div class="success-content">
+                <h4>Cadastro Confirmado!</h4>
+                <p id="registerSuccessText">Você já está cadastrado na lista de membros do Barbeiro Apostador.</p>
+                <div class="registered-details" id="registeredDetails"></div>
+              </div>
+            </div>
+
+            <!-- Campo Nome -->
+            <div class="form-group">
+              <label for="memberName">Seu Nome Completo</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user input-icon"></i>
+                <input 
+                  type="text" 
+                  id="memberName" 
+                  name="name" 
+                  placeholder="Ex: Carlos Eduardo Silva" 
+                  required 
+                  autofocus
+                />
+              </div>
+            </div>
+
+            <!-- Campo E-mail -->
+            <div class="form-group">
+              <label for="memberEmail">Seu Melhor E-mail</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-envelope input-icon"></i>
+                <input 
+                  type="email" 
+                  id="memberEmail" 
+                  name="email" 
+                  placeholder="Ex: seuemail@gmail.com" 
+                  required 
+                />
+              </div>
+            </div>
+
+            <!-- Campo Nick Twitch -->
+            <div class="form-group">
+              <div class="label-with-tip">
+                <label for="memberTwitch">Nick / Usuário na Twitch</label>
+                <span class="field-hint">Somente 1 por conta</span>
+              </div>
+              <div class="input-wrapper">
+                <i class="fa-brands fa-twitch input-icon twitch-field-icon"></i>
+                <input 
+                  type="text" 
+                  id="memberTwitch" 
+                  name="twitch" 
+                  placeholder="Ex: carlito_streamer ou @carlito" 
+                  required 
+                />
+              </div>
+              <small class="input-help">Digite sem espaços. Verificamos a disponibilidade do nick automaticamente.</small>
+            </div>
+
+            <button type="submit" class="btn-primary btn-block btn-register-action" id="btnSubmitMember">
+              <i class="fa-solid fa-user-check"></i>
+              <span>Finalizar Meu Cadastro</span>
+            </button>
+          </form>
+
+          <!-- Vantagens de ser Membro -->
+          <div class="member-perks-grid">
+            <div class="perk-item">
+              <div class="perk-icon"><i class="fa-solid fa-dharmachakra"></i></div>
+              <div class="perk-text">
+                <strong>Roleta da Sorte</strong>
+                <span>Entra na lista para sorteios ao vivo</span>
+              </div>
+            </div>
+            <div class="perk-item">
+              <div class="perk-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+              <div class="perk-text">
+                <strong>Gorjetas</strong>
+                <span>Pode receber gorjetas diretas no painel</span>
+              </div>
+            </div>
+            <div class="perk-item">
+              <div class="perk-icon"><i class="fa-solid fa-gem"></i></div>
+              <div class="perk-text">
+                <strong>Comunidade VIP</strong>
+                <span>Presença registrada na live</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="app-footer">
+      <div class="container footer-content">
+        <div class="footer-brand">
+          <i class="fa-solid fa-dice"></i>
+          <strong>Barbeiro Apostador</strong> &bull; Cadastro Oficial de Membros
+        </div>
+        <div class="footer-twitch">
+          <a 
+            href="https://www.twitch.tv/barbeiroapostador01" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="twitch-link"
+          >
+            <i class="fa-brands fa-twitch twitch-icon"></i>
+            <span class="twitch-label">Acompanhe na Twitch:</span>
+            <span class="twitch-handle">@barbeiroapostador01</span>
+            <i class="fa-solid fa-arrow-up-right-from-square external-icon"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/background.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/members.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const form = document.getElementById('memberRegisterForm');
+      const nameInput = document.getElementById('memberName');
+      const emailInput = document.getElementById('memberEmail');
+      const twitchInput = document.getElementById('memberTwitch');
+      const errorBox = document.getElementById('registerError');
+      const errorText = document.getElementById('registerErrorText');
+      const successBox = document.getElementById('registerSuccess');
+      const successText = document.getElementById('registerSuccessText');
+      const detailsBox = document.getElementById('registeredDetails');
+      const btnSubmit = document.getElementById('btnSubmitMember');
+
+      function showError(msg) {
+        if (successBox) successBox.classList.add('hidden');
+        if (errorBox && errorText) {
+          errorText.textContent = msg;
+          errorBox.classList.remove('hidden');
+          errorBox.style.animation = 'none';
+          errorBox.offsetHeight; // reflow
+          errorBox.style.animation = null;
+        }
+      }
+
+      function hideError() {
+        if (errorBox) errorBox.classList.add('hidden');
+      }
+
+      function showSuccess(member) {
+        hideError();
+        if (successBox && successText) {
+          successText.innerHTML = `Parabéns, <strong>${member.name}</strong>! Seu cadastro foi concluído com sucesso.`;
+          detailsBox.innerHTML = `
+            <div class="registered-chip">
+              <i class="fa-brands fa-twitch"></i> @${member.twitch}
+            </div>
+            <div class="registered-chip">
+              <i class="fa-regular fa-envelope"></i> ${member.email}
+            </div>
+          `;
+          successBox.classList.remove('hidden');
+          form.reset();
+          twitchInput.classList.remove('input-invalid');
+        }
+      }
+
+      // Validação em tempo real com debounce (evita múltiplas requisições ao Supabase)
+      let twitchCheckDebounce = null;
+      twitchInput.addEventListener('input', () => {
+        const nick = twitchInput.value.trim().replace(/^@+/, '');
+        twitchInput.classList.remove('input-invalid');
+        clearTimeout(twitchCheckDebounce);
+
+        if (nick.length >= 2) {
+          twitchCheckDebounce = setTimeout(async () => {
+            const alreadyExists = await MembersModule.isTwitchNickRegistered(nick);
+            if (alreadyExists) {
+              showError(`O nick "@${nick}" já foi cadastrado anteriormente.`);
+              twitchInput.classList.add('input-invalid');
+            } else {
+              hideError();
+              twitchInput.classList.remove('input-invalid');
+            }
+          }, 500);
+        } else {
+          hideError();
+        }
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideError();
+
+        const name = nameInput.value;
+        const email = emailInput.value;
+        const twitch = twitchInput.value;
+
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Cadastrando...</span>';
+
+        const result = await MembersModule.registerMember({ name, email, twitch });
+
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = '<i class="fa-solid fa-user-check"></i> <span>Finalizar Meu Cadastro</span>';
+
+        if (!result.success) {
+          showError(result.message);
+          twitchInput.focus();
+        } else {
+          showSuccess(result.member);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

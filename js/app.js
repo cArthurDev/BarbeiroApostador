@@ -3,7 +3,7 @@
  * Autenticação, Gerenciamento de Gorjetas e Integração com a Roleta
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Constantes de Autenticação solicitadas pelo usuário
   const VALID_USER = 'barbeiroapostador';
   const VALID_PASS = 'barbeiro123@';
@@ -330,7 +330,350 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ================= 5. GESTÃO DE MEMBROS CADASTRADOS (/membros) =================
+  const membersCountBadge = document.getElementById('membersCountBadge');
+  const statMembersTotal = document.getElementById('statMembersTotal');
+  const membersCardsGrid = document.getElementById('membersCardsGrid');
+  const emptyMembersState = document.getElementById('emptyMembersState');
+  const membersSearchInput = document.getElementById('membersSearchInput');
+  const btnClearSearch = document.getElementById('btnClearSearch');
+  const btnClearAllMembers = document.getElementById('btnClearAllMembers');
+  const btnSyncMembersToRoulette = document.getElementById('btnSyncMembersToRoulette');
+  const btnCopyMemberLink = document.getElementById('btnCopyMemberLink');
+  const copyLinkText = document.getElementById('copyLinkText');
+
+  // Elementos do Modal de Dar Gorjeta
+  const memberTipModal = document.getElementById('memberTipModal');
+  const btnCloseMemberTipModal = document.getElementById('btnCloseMemberTipModal');
+  const btnCancelMemberTip = document.getElementById('btnCancelMemberTip');
+  const memberTipForm = document.getElementById('memberTipForm');
+  const tipModalMemberId = document.getElementById('tipModalMemberId');
+  const tipModalMemberName = document.getElementById('tipModalMemberName');
+  const tipModalMemberTwitch = document.getElementById('tipModalMemberTwitch');
+  const tipModalValue = document.getElementById('tipModalValue');
+  const quickValBtns = document.querySelectorAll('.quick-val-btn');
+
+  let currentSelectedMember = null;
+
+  function getInitials(name) {
+    if (!name) return 'MB';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  /** Mostra skeleton de carregamento no grid de membros */
+  function showMembersLoading() {
+    if (!membersCardsGrid) return;
+    membersCardsGrid.innerHTML = `
+      <div class="member-card-skeleton"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+      <div class="member-card-skeleton"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+      <div class="member-card-skeleton"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+    `;
+    if (emptyMembersState) emptyMembersState.classList.add('hidden');
+  }
+
+  async function renderMembers(searchTerm = '') {
+    if (!membersCardsGrid) return;
+
+    showMembersLoading();
+
+    const allMembers = window.MembersModule ? await window.MembersModule.loadMembers() : [];
+    const total = allMembers.length;
+
+    if (membersCountBadge) membersCountBadge.textContent = total;
+    if (statMembersTotal) statMembersTotal.textContent = total;
+
+    // Filtragem por busca
+    const term = searchTerm.trim().toLowerCase();
+    const filteredMembers = term
+      ? allMembers.filter(m =>
+          (m.name && m.name.toLowerCase().includes(term)) ||
+          (m.email && m.email.toLowerCase().includes(term)) ||
+          (m.twitch && m.twitch.toLowerCase().includes(term))
+        )
+      : allMembers;
+
+    membersCardsGrid.innerHTML = '';
+
+    if (filteredMembers.length === 0) {
+      if (emptyMembersState) {
+        emptyMembersState.classList.remove('hidden');
+        const emptyH3 = emptyMembersState.querySelector('h3');
+        const emptyP = emptyMembersState.querySelector('p');
+        if (term) {
+          if (emptyH3) emptyH3.textContent = 'Nenhum membro encontrado';
+          if (emptyP) emptyP.textContent = `Nenhum cadastro corresponde à busca "${searchTerm}".`;
+        } else {
+          if (emptyH3) emptyH3.textContent = 'Nenhum membro cadastrado ainda';
+          if (emptyP) emptyP.textContent = 'Os usuários que se cadastrarem na rota /membros aparecerão automaticamente aqui com opções de exclusão e envio de gorjeta.';
+        }
+      }
+      return;
+    }
+
+    if (emptyMembersState) emptyMembersState.classList.add('hidden');
+
+    filteredMembers.forEach(member => {
+      const card = document.createElement('div');
+      card.className = 'glass-card member-card';
+      card.setAttribute('data-id', member.id);
+
+      const initials = getInitials(member.name);
+      const twitchUrl = `https://www.twitch.tv/${encodeURIComponent(member.twitch)}`;
+
+      card.innerHTML = `
+        <div class="member-card-header">
+          <div class="member-avatar"><span>${initials}</span></div>
+          <div class="member-header-info">
+            <h3 class="member-name" title="${escapeHtml(member.name)}">${escapeHtml(member.name)}</h3>
+            <a href="${twitchUrl}" target="_blank" rel="noopener noreferrer" class="member-twitch-badge" title="Abrir canal no Twitch">
+              <i class="fa-brands fa-twitch"></i>
+              <span>@${escapeHtml(member.twitch)}</span>
+              <i class="fa-solid fa-arrow-up-right-from-square twitch-card-ext"></i>
+            </a>
+          </div>
+        </div>
+        <div class="member-card-body">
+          <div class="member-info-row" title="E-mail">
+            <i class="fa-regular fa-envelope info-row-icon"></i>
+            <span class="info-row-text">${escapeHtml(member.email)}</span>
+          </div>
+          <div class="member-info-row" title="Data de cadastro">
+            <i class="fa-regular fa-calendar info-row-icon"></i>
+            <span class="info-row-text">${member.displayDate || 'Membro cadastrado'}</span>
+          </div>
+        </div>
+        <div class="member-card-actions">
+          <button type="button" class="btn-action-tip" data-id="${member.id}" title="Dar gorjeta para este membro">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+            <span>Dar Gorjeta</span>
+          </button>
+          <button type="button" class="btn-action-delete" data-id="${member.id}" title="Excluir este membro">
+            <i class="fa-solid fa-trash-can"></i>
+            <span>Excluir</span>
+          </button>
+        </div>
+      `;
+
+      // Botão Dar Gorjeta
+      const btnTip = card.querySelector('.btn-action-tip');
+      if (btnTip) btnTip.addEventListener('click', () => openMemberTipModal(member));
+
+      // Botão Excluir individual (async)
+      const btnDelete = card.querySelector('.btn-action-delete');
+      if (btnDelete) {
+        btnDelete.addEventListener('click', async () => {
+          if (!confirm(`Deseja realmente excluir o membro "${member.name}" (@${member.twitch})?`)) return;
+          btnDelete.disabled = true;
+          btnDelete.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+          if (window.MembersModule) await window.MembersModule.removeMember(member.id);
+          await renderMembers(membersSearchInput ? membersSearchInput.value : '');
+        });
+      }
+
+      membersCardsGrid.appendChild(card);
+    });
+  }
+
+  // Busca com debounce de 300ms para não disparar fetch a cada tecla
+  let membersSearchDebounce = null;
+  if (membersSearchInput) {
+    membersSearchInput.addEventListener('input', () => {
+      const term = membersSearchInput.value;
+      if (btnClearSearch) btnClearSearch.classList.toggle('hidden', !term);
+      clearTimeout(membersSearchDebounce);
+      membersSearchDebounce = setTimeout(() => renderMembers(term), 300);
+    });
+  }
+
+  if (btnClearSearch) {
+    btnClearSearch.addEventListener('click', () => {
+      membersSearchInput.value = '';
+      btnClearSearch.classList.add('hidden');
+      renderMembers('');
+      membersSearchInput.focus();
+    });
+  }
+
+  // Botão Excluir Todos os Membros (async)
+  if (btnClearAllMembers) {
+    btnClearAllMembers.addEventListener('click', async () => {
+      const total = parseInt(statMembersTotal ? statMembersTotal.textContent : '0', 10);
+      if (total === 0) {
+        alert('Não há membros cadastrados para excluir.');
+        return;
+      }
+      if (!confirm(`ATENÇÃO: Deseja realmente excluir TODOS os ${total} membros cadastrados? Esta ação não pode ser desfeita.`)) return;
+
+      btnClearAllMembers.disabled = true;
+      btnClearAllMembers.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Excluindo...';
+
+      if (window.MembersModule) await window.MembersModule.removeAllMembers();
+      await renderMembers('');
+
+      btnClearAllMembers.disabled = false;
+      btnClearAllMembers.innerHTML = '<i class="fa-regular fa-trash-can"></i> <span>Excluir Todos</span>';
+    });
+  }
+
+  // Enviar Membros para a Roleta (async)
+  if (btnSyncMembersToRoulette) {
+    btnSyncMembersToRoulette.addEventListener('click', async () => {
+      btnSyncMembersToRoulette.disabled = true;
+      btnSyncMembersToRoulette.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Carregando...</span>';
+
+      const all = window.MembersModule ? await window.MembersModule.loadMembers() : [];
+
+      btnSyncMembersToRoulette.disabled = false;
+      btnSyncMembersToRoulette.innerHTML = '<i class="fa-solid fa-share-nodes"></i> <span>Enviar para a Roleta</span>';
+
+      if (all.length === 0) {
+        alert('Nenhum membro cadastrado para enviar à roleta!');
+        return;
+      }
+      const names = all.map(m => m.name);
+      roulette.setParticipants(names);
+      switchTab('tabRoulette');
+    });
+  }
+
+  // Copiar link de cadastro /membros
+  if (btnCopyMemberLink) {
+    btnCopyMemberLink.addEventListener('click', () => {
+      const currentUrl = window.location.href.split('#')[0].split('?')[0];
+      const membersUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1) + 'membros.html';
+      
+      navigator.clipboard.writeText(membersUrl).then(() => {
+        if (copyLinkText) copyLinkText.textContent = 'Link Copiado!';
+        btnCopyMemberLink.style.borderColor = 'var(--color-success)';
+        setTimeout(() => {
+          if (copyLinkText) copyLinkText.textContent = 'Copiar Link /membros';
+          btnCopyMemberLink.style.borderColor = '';
+        }, 2000);
+      }).catch(() => {
+        prompt('Copie o link abaixo:', membersUrl);
+      });
+    });
+  }
+
+  // ================= MODAL DE DAR GORJETA AO MEMBRO =================
+  function openMemberTipModal(member) {
+    currentSelectedMember = member;
+    if (!memberTipModal) return;
+
+    if (tipModalMemberId) tipModalMemberId.value = member.id;
+    if (tipModalMemberName) tipModalMemberName.textContent = member.name;
+    if (tipModalMemberTwitch) tipModalMemberTwitch.textContent = `@${member.twitch}`;
+    if (tipModalValue) {
+      tipModalValue.value = '';
+      setTimeout(() => tipModalValue.focus(), 150);
+    }
+
+    memberTipModal.classList.remove('hidden');
+    setTimeout(() => {
+      memberTipModal.classList.add('active');
+    }, 10);
+  }
+
+  function closeMemberTipModal() {
+    if (!memberTipModal) return;
+    memberTipModal.classList.remove('active');
+    setTimeout(() => {
+      memberTipModal.classList.add('hidden');
+      currentSelectedMember = null;
+    }, 200);
+  }
+
+  if (btnCloseMemberTipModal) {
+    btnCloseMemberTipModal.addEventListener('click', closeMemberTipModal);
+  }
+
+  if (btnCancelMemberTip) {
+    btnCancelMemberTip.addEventListener('click', closeMemberTipModal);
+  }
+
+  // Fechar modal ao clicar fora do card
+  if (memberTipModal) {
+    memberTipModal.addEventListener('click', (e) => {
+      if (e.target === memberTipModal) {
+        closeMemberTipModal();
+      }
+    });
+  }
+
+  // Chips de valores rápidos
+  quickValBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.getAttribute('data-val');
+      if (tipModalValue && val) {
+        tipModalValue.value = val;
+        tipModalValue.focus();
+      }
+    });
+  });
+
+  // Confirmar gorjeta para o membro
+  if (memberTipForm) {
+    memberTipForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!currentSelectedMember) return;
+
+      const val = parseFloat(tipModalValue.value);
+      if (isNaN(val) || val <= 0) {
+        alert('Por favor, informe um valor de gorjeta maior que zero.');
+        return;
+      }
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      // Cadastra nas gorjetas com o nome do membro
+      const newTip = {
+        id: Date.now().toString(),
+        name: `${currentSelectedMember.name} (@${currentSelectedMember.twitch})`,
+        value: val,
+        time: timeStr
+      };
+
+      tipsData.unshift(newTip);
+      saveTips();
+      renderTips();
+
+      closeMemberTipModal();
+
+      // Confirmação com ação rápida
+      const formattedVal = formatBRL(val);
+      if (confirm(`Gorjeta de ${formattedVal} registrada com sucesso para ${currentSelectedMember.name}!\n\nDeseja abrir a aba de Gorjetas para visualizar?`)) {
+        switchTab('tabTips');
+      }
+    });
+  }
+
+  // Atualizar gorjetas se localStorage mudar (outra aba)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'barbeiro_tips') {
+      tipsData = loadTips();
+      renderTips();
+    }
+  });
+
+  // Recarregar membros ao trocar para a aba de Membros
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.getAttribute('data-target') === 'tabMembers') {
+        renderMembers(membersSearchInput ? membersSearchInput.value : '');
+      }
+    });
+  });
+
+  // Se a URL contiver hash #membros, abre a aba de membros diretamente
+  if (window.location.hash === '#membros') {
+    switchTab('tabMembers');
+  }
+
   // Iniciar checagem de sessão e renderizar dados iniciais
   checkSession();
   renderTips();
+  await renderMembers();
 });

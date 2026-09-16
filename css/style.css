@@ -1342,3 +1342,870 @@ button {
     justify-content: center;
   }
 }
+
+/* ==========================================================
+   ESTILOS DA ABA DE MEMBROS CADASTRADOS & PÁGINA /MEMBROS
+   ========================================================== */
+
+/* Link na tela de login */
+.login-footer-link {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(30, 80, 180, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.login-footer-link .link-highlight {
+  color: var(--blue-vibrant);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.login-footer-link .link-highlight:hover {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 162, 255, 0.6);
+}
+
+/* Layout da aba de membros */
+.members-dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.members-header-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.members-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.members-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.members-title-group h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.members-title-group p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.link-route {
+  color: var(--blue-vibrant);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link-route:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+.members-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Barra de ferramentas da aba de membros */
+.members-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.search-wrapper {
+  flex: 1;
+  min-width: 280px;
+  max-width: 520px;
+  position: relative;
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.btn-clear-search:hover {
+  color: #fff;
+}
+
+.members-stats-chips {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stat-chip {
+  background: rgba(4, 10, 24, 0.7);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.chip-value {
+  color: var(--blue-vibrant);
+  font-size: 1rem;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Grid de Cards dos Membros */
+.members-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Card Individual do Membro */
+.member-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.member-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #9146ff, #00d2ff);
+  opacity: 0.6;
+}
+
+.member-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 162, 255, 0.5);
+  box-shadow: 0 14px 35px rgba(0, 5, 20, 0.8), 0 0 20px rgba(0, 162, 255, 0.25);
+}
+
+.member-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.member-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d2866 0%, #1e4599 100%);
+  border: 2px solid rgba(0, 170, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.05rem;
+  font-family: 'Outfit', sans-serif;
+  box-shadow: 0 0 12px rgba(0, 136, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.member-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.member-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-twitch-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(145, 70, 255, 0.15);
+  border: 1px solid rgba(145, 70, 255, 0.4);
+  color: #bf94ff;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  width: fit-content;
+  transition: var(--transition);
+}
+
+.member-twitch-badge:hover {
+  background: rgba(145, 70, 255, 0.3);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(145, 70, 255, 0.5);
+}
+
+.twitch-card-ext {
+  font-size: 0.65rem;
+  opacity: 0.7;
+}
+
+/* Corpo do card de membro */
+.member-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(4, 10, 26, 0.5);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.member-info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  overflow: hidden;
+}
+
+.info-row-icon {
+  color: var(--blue-vibrant);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.info-row-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ações no Card */
+.member-card-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.btn-action-tip {
+  background: linear-gradient(135deg, rgba(0, 162, 255, 0.25) 0%, rgba(0, 119, 255, 0.35) 100%);
+  border: 1px solid rgba(0, 170, 255, 0.4);
+  color: #d6ecff;
+  padding: 9px 14px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+.btn-action-tip:hover {
+  background: linear-gradient(135deg, #0077ff 0%, #00bfff 100%);
+  color: #fff;
+  border-color: #00d2ff;
+  box-shadow: 0 4px 15px rgba(0, 162, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-action-delete {
+  background: rgba(255, 51, 102, 0.08);
+  border: 1px solid rgba(255, 51, 102, 0.3);
+  color: #ff6b8b;
+  padding: 9px 14px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.btn-action-delete:hover {
+  background: rgba(255, 51, 102, 0.2);
+  border-color: var(--color-danger);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(255, 51, 102, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Card Vazio de Membros */
+.empty-members-card {
+  text-align: center;
+  padding: 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.empty-members-card .empty-icon {
+  font-size: 3rem;
+  color: #9146ff;
+  text-shadow: 0 0 20px rgba(145, 70, 255, 0.5);
+  margin-bottom: 4px;
+}
+
+.empty-members-card h3 {
+  font-size: 1.4rem;
+  color: #fff;
+}
+
+.empty-members-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  max-width: 480px;
+  line-height: 1.5;
+}
+
+.empty-members-card code {
+  background: rgba(0, 140, 255, 0.15);
+  color: var(--blue-vibrant);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.empty-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ================= MODAL: DAR GORJETA AO MEMBRO ================= */
+.modal-tip-card {
+  max-width: 460px;
+}
+
+.modal-header-simple {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.tip-modal-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(0, 162, 255, 0.15);
+  border: 1px solid rgba(0, 170, 255, 0.35);
+  color: var(--blue-vibrant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.btn-close-modal {
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-close-modal:hover {
+  color: #fff;
+}
+
+.modal-tip-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.modal-tip-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.modal-twitch-tag {
+  color: #bf94ff;
+  font-weight: 600;
+}
+
+.tip-value-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.mb-3 {
+  margin-bottom: 14px;
+}
+
+.quick-values-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+}
+
+.quick-value-chips {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.quick-val-btn {
+  flex: 1;
+  min-width: 60px;
+  background: rgba(10, 24, 56, 0.8);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.quick-val-btn:hover {
+  background: rgba(0, 119, 255, 0.25);
+  border-color: var(--blue-vibrant);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.modal-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 12px;
+}
+
+/* ==========================================================
+   PÁGINA PÚBLICA /MEMBROS (membros.html & membros/index.html)
+   ========================================================== */
+.members-page-body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.members-page-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.members-header {
+  background: rgba(8, 16, 36, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.members-header-content {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.members-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-twitch-nav {
+  background: linear-gradient(135deg, #9146ff 0%, #6441a5 100%);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(145, 70, 255, 0.4);
+  transition: var(--transition);
+}
+
+.btn-twitch-nav:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(145, 70, 255, 0.6);
+  color: #fff;
+}
+
+.members-main-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 60px;
+}
+
+.members-card-container {
+  width: 100%;
+  max-width: 580px;
+}
+
+.member-register-card {
+  padding: 38px 34px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0, 140, 255, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 35px rgba(0, 119, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.member-register-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #9146ff, #00bfff, #9146ff);
+  background-size: 200% 100%;
+  animation: gradientShift 3s linear infinite;
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.badge-twitch {
+  background: rgba(145, 70, 255, 0.15) !important;
+  border-color: rgba(145, 70, 255, 0.4) !important;
+  color: #bf94ff !important;
+}
+
+.register-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 40%, #a6d8ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.register-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* Aviso de regra da Twitch */
+.twitch-rule-notice {
+  background: rgba(145, 70, 255, 0.1);
+  border: 1px solid rgba(145, 70, 255, 0.3);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #d1b8ff;
+  text-align: left;
+}
+
+.twitch-rule-notice .rule-icon {
+  color: #a970ff;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.twitch-rule-notice strong {
+  color: #fff;
+}
+
+.label-with-tip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.label-with-tip label {
+  margin-bottom: 0;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: #bf94ff;
+  font-weight: 600;
+}
+
+.twitch-field-icon {
+  color: #a970ff !important;
+}
+
+.input-help {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.input-invalid {
+  border-color: var(--color-danger) !important;
+  box-shadow: 0 0 0 2px rgba(255, 51, 102, 0.25) !important;
+}
+
+.btn-register-action {
+  margin-top: 24px;
+  padding: 14px 24px;
+  font-size: 1rem;
+}
+
+/* Caixa de Sucesso no Cadastro */
+.register-success-box {
+  background: rgba(0, 230, 118, 0.12);
+  border: 1px solid rgba(0, 230, 118, 0.4);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  animation: cardFadeIn 0.35s ease;
+}
+
+.success-icon-badge {
+  font-size: 1.5rem;
+  color: var(--color-success);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.success-content h4 {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.success-content p {
+  color: #c0f2d5;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.registered-details {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.registered-chip {
+  background: rgba(0, 230, 118, 0.15);
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  color: #fff;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Grid de Vantagens do Membro */
+.member-perks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+.perk-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(4, 10, 26, 0.45);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.perk-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 162, 255, 0.15);
+  color: var(--blue-vibrant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.perk-text strong {
+  display: block;
+  color: #fff;
+  font-size: 0.82rem;
+  margin-bottom: 2px;
+}
+
+.perk-text span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .member-perks-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .perk-item {
+    flex-direction: row;
+    text-align: left;
+    gap: 12px;
+  }
+
+  .members-header-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .members-actions-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .members-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-wrapper {
+    max-width: 100%;
+  }
+
+  .members-stats-chips {
+    justify-content: space-between;
+  }
+}
+
+/* ================= SKELETON LOADING - MEMBROS ================= */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.member-card-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  min-height: 120px;
+}
+
+.skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, rgba(30,60,120,0.4) 25%, rgba(60,100,180,0.25) 50%, rgba(30,60,120,0.4) 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.skeleton-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(30,60,120,0.4) 25%, rgba(60,100,180,0.25) 50%, rgba(30,60,120,0.4) 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+.skeleton-line.short {
+  width: 55%;
+}
+
+

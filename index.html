@@ -71,6 +71,11 @@
           <span>Entrar no Sistema</span>
           <i class="fa-solid fa-arrow-right"></i>
         </button>
+
+        <div class="login-footer-link">
+          <span>É seguidor da Twitch?</span>
+          <a href="membros.html" class="link-highlight"><i class="fa-brands fa-twitch"></i> Cadastre-se como Membro</a>
+        </div>
       </form>
     </div>
   </div>
@@ -101,6 +106,11 @@
             <i class="fa-solid fa-dharmachakra"></i>
             <span>Roleta da Sorte</span>
             <span class="badge" id="rouletteCountBadge">0</span>
+          </button>
+          <button class="tab-btn" id="tabBtnMembers" data-target="tabMembers" role="tab" aria-selected="false">
+            <i class="fa-solid fa-users"></i>
+            <span>Membros</span>
+            <span class="badge" id="membersCountBadge">0</span>
           </button>
         </nav>
 
@@ -338,6 +348,85 @@
         </div>
       </section>
 
+      <!-- ================= ABA 3: MEMBROS CADASTRADOS ================= -->
+      <section id="tabMembers" class="tab-pane">
+        <div class="members-dashboard-layout">
+          
+          <!-- Cabeçalho da Aba de Membros -->
+          <div class="glass-card members-header-card">
+            <div class="members-header-top">
+              <div class="members-title-group">
+                <div class="header-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+                <div>
+                  <h2>Membros Cadastrados</h2>
+                  <p>Inscritos através da página pública <a href="membros.html" target="_blank" class="link-route">/membros <i class="fa-solid fa-arrow-up-right-from-square"></i></a></p>
+                </div>
+              </div>
+
+              <div class="members-actions-group">
+                <a href="membros.html" target="_blank" class="btn-secondary" title="Abrir página pública de inscrição">
+                  <i class="fa-solid fa-user-plus"></i>
+                  <span>Página /membros</span>
+                </a>
+                <button type="button" id="btnClearAllMembers" class="btn-outline-danger" title="Excluir todos os membros cadastrados">
+                  <i class="fa-regular fa-trash-can"></i>
+                  <span>Excluir Todos</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Barra de Ferramentas / Busca e Ações Rápidas -->
+            <div class="members-toolbar">
+              <div class="input-wrapper search-wrapper">
+                <i class="fa-solid fa-magnifying-glass input-icon"></i>
+                <input 
+                  type="text" 
+                  id="membersSearchInput" 
+                  placeholder="Pesquisar por nome, e-mail ou nick da Twitch..." 
+                />
+                <button type="button" id="btnClearSearch" class="btn-clear-search hidden" title="Limpar pesquisa">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <div class="members-stats-chips">
+                <div class="stat-chip">
+                  <span class="chip-label">Total Cadastrados:</span>
+                  <strong id="statMembersTotal" class="chip-value">0</strong>
+                </div>
+                <button type="button" id="btnSyncMembersToRoulette" class="btn-secondary btn-sm" title="Enviar todos os nomes para a Roleta">
+                  <i class="fa-solid fa-share-nodes"></i>
+                  <span>Enviar para a Roleta</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grid de Cards dos Membros Cadastrados -->
+          <div class="members-cards-grid" id="membersCardsGrid">
+            <!-- Cards inseridos dinamicamente via JS -->
+          </div>
+
+          <!-- Estado Vazio quando não há membros -->
+          <div id="emptyMembersState" class="glass-card empty-members-card hidden">
+            <div class="empty-icon"><i class="fa-brands fa-twitch"></i></div>
+            <h3>Nenhum membro cadastrado ainda</h3>
+            <p>Os usuários que se cadastrarem na rota <code>/membros</code> aparecerão automaticamente aqui com opções de exclusão e envio de gorjeta.</p>
+            <div class="empty-actions">
+              <a href="membros.html" target="_blank" class="btn-primary">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <span>Abrir Página de Cadastro</span>
+              </a>
+              <button type="button" id="btnCopyMemberLink" class="btn-secondary">
+                <i class="fa-regular fa-copy"></i>
+                <span id="copyLinkText">Copiar Link /membros</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
     </main>
 
     <!-- Rodapé Oficial com Link da Twitch -->
@@ -390,11 +479,70 @@
     </div>
   </div>
 
+  <!-- MODAL: DAR GORJETA AO MEMBRO -->
+  <div id="memberTipModal" class="modal-overlay hidden">
+    <div class="modal-card modal-tip-card">
+      <div class="modal-header-simple">
+        <div class="tip-modal-badge">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+        </div>
+        <button type="button" class="btn-close-modal" id="btnCloseMemberTipModal" title="Fechar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <h3 class="modal-tip-title">Dar Gorjeta ao Membro</h3>
+      <p class="modal-tip-subtitle">
+        Destinar gorjeta para <strong id="tipModalMemberName">Nome</strong> 
+        (<span id="tipModalMemberTwitch" class="modal-twitch-tag">@twitch</span>)
+      </p>
+
+      <form id="memberTipForm" class="member-tip-form">
+        <input type="hidden" id="tipModalMemberId" value="" />
+        
+        <label for="tipModalValue" class="tip-value-label">Valor da Gorjeta (R$)</label>
+        <div class="input-wrapper mb-3">
+          <span class="currency-prefix">R$</span>
+          <input 
+            type="number" 
+            id="tipModalValue" 
+            placeholder="0,00" 
+            step="0.01" 
+            min="0.01" 
+            required 
+          />
+        </div>
+
+        <!-- Atalhos de valores rápidos -->
+        <div class="quick-values-label">Sugestões rápidas:</div>
+        <div class="quick-value-chips">
+          <button type="button" class="quick-val-btn" data-val="5">R$ 5</button>
+          <button type="button" class="quick-val-btn" data-val="10">R$ 10</button>
+          <button type="button" class="quick-val-btn" data-val="20">R$ 20</button>
+          <button type="button" class="quick-val-btn" data-val="50">R$ 50</button>
+          <button type="button" class="quick-val-btn" data-val="100">R$ 100</button>
+        </div>
+
+        <div class="modal-actions-grid">
+          <button type="button" id="btnCancelMemberTip" class="btn-secondary">
+            <span>Cancelar</span>
+          </button>
+          <button type="submit" class="btn-primary" id="btnConfirmMemberTip">
+            <i class="fa-solid fa-check"></i>
+            <span>Confirmar Gorjeta</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Canvas de Confetes -->
   <canvas id="confettiCanvas"></canvas>
 
   <!-- Scripts -->
   <script src="js/background.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/members.js"></script>
   <script src="js/roulette.js"></script>
   <script src="js/app.js"></script>
 </body>
