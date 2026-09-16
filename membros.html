@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro de Membros | Barbeiro Apostador</title>
+  <meta name="description" content="Cadastre-se na comunidade Barbeiro Apostador e participe dos sorteios ao vivo." />
+  <meta name="theme-color" content="#050a17" />
+  <meta property="og:title" content="Cadastro de Membros | Barbeiro Apostador" />
+  <meta property="og:description" content="Entre para a comunidade e participe dos sorteios ao vivo." />
+  <meta property="og:image" content="images/logo.png" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
   
   <!-- Fontes do Google: Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -136,6 +143,11 @@
               <small class="input-help">Digite sem espaços. Verificamos a disponibilidade do nick automaticamente.</small>
             </div>
 
+            <label class="consent-check" for="memberConsent">
+              <input type="checkbox" id="memberConsent" required />
+              <span>Concordo com o uso dos meus dados para participar da comunidade e dos sorteios.</span>
+            </label>
+
             <button type="submit" class="btn-primary btn-block btn-register-action" id="btnSubmitMember">
               <i class="fa-solid fa-user-check"></i>
               <span>Finalizar Meu Cadastro</span>
@@ -206,6 +218,7 @@
       const nameInput = document.getElementById('memberName');
       const emailInput = document.getElementById('memberEmail');
       const twitchInput = document.getElementById('memberTwitch');
+      const consentInput = document.getElementById('memberConsent');
       const errorBox = document.getElementById('registerError');
       const errorText = document.getElementById('registerErrorText');
       const successBox = document.getElementById('registerSuccess');
@@ -291,6 +304,12 @@
         const name = nameInput.value;
         const email = emailInput.value;
         const twitch = twitchInput.value;
+
+        if (!consentInput.checked) {
+          showError('Confirme o consentimento para concluir o cadastro.');
+          consentInput.focus();
+          return;
+        }
 
         btnSubmit.disabled = true;
         btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Cadastrando...</span>';

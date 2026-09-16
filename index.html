@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Barbeiro Apostador</title>
+  <meta name="description" content="Painel do Barbeiro Apostador para gerenciar gorjetas, membros e sorteios ao vivo." />
+  <meta name="theme-color" content="#050a17" />
+  <meta property="og:title" content="Barbeiro Apostador" />
+  <meta property="og:description" content="Gerencie membros, gorjetas e sorteios da comunidade." />
+  <meta property="og:image" content="images/logo.png" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
   
   <!-- Fontes do Google: Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -347,6 +354,18 @@
             <div id="emptyRouletteState" class="empty-state small">
               <i class="fa-solid fa-user-slash empty-icon"></i>
               <p>Nenhum participante adicionado.<br>Adicione acima ou puxe da lista de gorjetas.</p>
+            </div>
+
+            <div class="roulette-history-section">
+              <div class="participants-section-header">
+                <span>Histórico de vencedores</span>
+                <button type="button" id="btnClearRouletteHistory" class="btn-text-danger hidden">Limpar</button>
+              </div>
+              <div id="rouletteHistoryList" class="roulette-history-list"></div>
+              <div id="emptyRouletteHistory" class="empty-state small">
+                <i class="fa-solid fa-clock-rotate-left empty-icon"></i>
+                <p>Nenhum sorteio realizado ainda.</p>
+              </div>
             </div>
           </div>
 

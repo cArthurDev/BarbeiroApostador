@@ -11,7 +11,7 @@ class RouletteWheel {
 
     // A roleta começa vazia e só recebe nomes por ação explícita do administrador.
     this.participants = [];
-    localStorage.removeItem('barbeiro_roulette_participants');
+    this.history = this.loadHistory();
 
     // Paleta de cores para as fatias (Gradientes e contrastes em tons de azul)
     this.sliceColors = [
@@ -46,6 +46,9 @@ class RouletteWheel {
     this.emptyRouletteState = document.getElementById('emptyRouletteState');
     this.rouletteCountText = document.getElementById('rouletteCountText');
     this.rouletteCountBadge = document.getElementById('rouletteCountBadge');
+    this.rouletteHistoryList = document.getElementById('rouletteHistoryList');
+    this.emptyRouletteHistory = document.getElementById('emptyRouletteHistory');
+    this.btnClearRouletteHistory = document.getElementById('btnClearRouletteHistory');
 
     this.currentWinner = null;
     this.audioCtx = null;
@@ -55,7 +58,9 @@ class RouletteWheel {
 
   // Inicializar eventos e renderização inicial
   init() {
+    this.participants = this.loadParticipants();
     this.renderParticipantsList();
+    this.renderHistory();
     this.drawWheel();
 
     if (this.btnSpin) {
@@ -66,6 +71,16 @@ class RouletteWheel {
     }
     if (this.btnShuffle) {
       this.btnShuffle.addEventListener('click', () => this.shuffle());
+    }
+
+    if (this.btnClearRouletteHistory) {
+      this.btnClearRouletteHistory.addEventListener('click', () => {
+        if (!this.history.length) return;
+        if (!confirm('Deseja limpar o histórico de vencedores?')) return;
+        this.history = [];
+        this.saveHistory();
+        this.renderHistory();
+      });
     }
 
     if (this.btnRemoveWinner) {
@@ -184,6 +199,46 @@ class RouletteWheel {
     } catch (e) { }
     // A roleta começa vazia até o administrador adicionar participantes.
     return [];
+  }
+
+  loadHistory() {
+    try {
+      const saved = localStorage.getItem('barbeiro_roulette_history');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  saveHistory() {
+    try {
+      localStorage.setItem('barbeiro_roulette_history', JSON.stringify(this.history));
+    } catch (error) { }
+  }
+
+  renderHistory() {
+    if (!this.rouletteHistoryList) return;
+    this.rouletteHistoryList.innerHTML = '';
+    this.emptyRouletteHistory.classList.toggle('hidden', this.history.length > 0);
+    this.btnClearRouletteHistory.classList.toggle('hidden', this.history.length === 0);
+
+    this.history.forEach((item) => {
+      const row = document.createElement('div');
+      const date = new Date(item.createdAt);
+      const dateText = Number.isNaN(date.getTime())
+        ? 'Data não informada'
+        : date.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      row.className = 'roulette-history-item';
+      row.innerHTML = `
+        <span class="roulette-history-trophy"><i class="fa-solid fa-trophy"></i></span>
+        <span class="roulette-history-details">
+          <strong>${escapeHtml(item.name)}</strong>
+          <small>${dateText}</small>
+        </span>
+      `;
+      this.rouletteHistoryList.appendChild(row);
+    });
   }
 
   saveParticipants() {
@@ -470,6 +525,14 @@ class RouletteWheel {
 
     this.currentWinner = this.participants[winnerIndex];
     this.targetWinnerIndex = null;
+
+    this.history.unshift({
+      name: this.currentWinner,
+      createdAt: new Date().toISOString()
+    });
+    this.history = this.history.slice(0, 20);
+    this.saveHistory();
+    this.renderHistory();
 
     this.playWinSound();
     this.showConfetti();

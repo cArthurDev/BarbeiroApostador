@@ -214,10 +214,41 @@ button {
   font-size: 0.85rem;
 }
 
+.btn-text-danger {
+  background: transparent;
+  color: var(--color-danger);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 0;
+}
+
+.btn-text-danger:hover {
+  color: #ff7d9a;
+}
+
 /* ================= CAMPOS DE ENTRADA ================= */
 .form-group {
   margin-bottom: 18px;
   text-align: left;
+}
+
+.consent-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 0 20px;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.consent-check input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--blue-vibrant);
+  flex: 0 0 auto;
 }
 
 .form-group label {
@@ -1378,6 +1409,49 @@ button {
   flex: 1;
 }
 
+.roulette-history-section {
+  margin-top: 24px;
+}
+
+.roulette-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.roulette-history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  background: rgba(7, 16, 38, 0.65);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.roulette-history-trophy {
+  color: var(--accent-gold);
+}
+
+.roulette-history-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.roulette-history-details strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roulette-history-details small {
+  color: var(--text-muted);
+}
+
 .participant-chip {
   display: flex;
   align-items: center;
@@ -1638,8 +1712,23 @@ button {
   .nav-tabs {
     order: 3;
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
     overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .tab-btn {
+    flex: 0 0 auto;
+    padding: 9px 14px;
+  }
+
+  .app-main {
+    padding-top: 20px;
+  }
+
+  .glass-card {
+    padding: 20px;
+    border-radius: var(--radius-md);
   }
 
   .hide-mobile {
@@ -1670,6 +1759,42 @@ button {
 
   .battle-bracket-card {
     min-height: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .header-content {
+    gap: 10px;
+  }
+
+  .site-logo {
+    width: 124px;
+    height: 50px;
+  }
+
+  .nav-tabs {
+    margin: 0 -4px;
+  }
+
+  .tab-btn {
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+
+  .tab-btn .badge {
+    padding: 2px 5px;
+  }
+
+  .card-header {
+    align-items: flex-start;
+  }
+
+  .card-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .table-responsive {
+    margin: 0 -8px;
   }
 }
 
