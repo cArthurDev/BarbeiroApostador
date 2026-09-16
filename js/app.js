@@ -40,11 +40,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   const statMaxTip = document.getElementById('statMaxTip');
   const tipsCountBadge = document.getElementById('tipsCountBadge');
 
+  // Elementos da Gestão de Banca
+  const bankTransactionForm = document.getElementById('bankTransactionForm');
+  const bankTransactionType = document.getElementById('bankTransactionType');
+  const bankTransactionAmount = document.getElementById('bankTransactionAmount');
+  const bankTransactionNote = document.getElementById('bankTransactionNote');
+  const bankTransactionError = document.getElementById('bankTransactionError');
+  const bankBalance = document.getElementById('bankBalance');
+  const bankTotalDeposits = document.getElementById('bankTotalDeposits');
+  const bankTotalWithdrawals = document.getElementById('bankTotalWithdrawals');
+  const bankHistoryList = document.getElementById('bankHistoryList');
+  const bankEmptyState = document.getElementById('bankEmptyState');
+  const btnClearBank = document.getElementById('btnClearBank');
+
   // Instância da Roleta
   const roulette = new RouletteWheel('rouletteCanvas');
 
   // Armazenamento das Gorjetas
   let tipsData = loadTips();
+  let bankData = loadBankData();
 
   // ================= 1. AUTENTICAÇÃO =================
   function checkSession() {
@@ -170,6 +184,115 @@ document.addEventListener('DOMContentLoaded', async () => {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
+  }
+
+  function loadBankData() {
+    try {
+      const saved = localStorage.getItem('barbeiro_bank');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveBankData() {
+    try {
+      localStorage.setItem('barbeiro_bank', JSON.stringify(bankData));
+    } catch (error) {}
+  }
+
+  function getBankTotals() {
+    return bankData.reduce((totals, transaction) => {
+      if (transaction.type === 'deposit') totals.deposits += transaction.amount;
+      if (transaction.type === 'withdrawal') totals.withdrawals += transaction.amount;
+      return totals;
+    }, { deposits: 0, withdrawals: 0 });
+  }
+
+  function showBankError(message) {
+    if (!bankTransactionError) return;
+    bankTransactionError.querySelector('span').textContent = message;
+    bankTransactionError.classList.remove('hidden');
+  }
+
+  function hideBankError() {
+    if (bankTransactionError) bankTransactionError.classList.add('hidden');
+  }
+
+  function renderBank() {
+    if (!bankHistoryList) return;
+    const totals = getBankTotals();
+    const balance = totals.withdrawals - totals.deposits;
+
+    bankBalance.textContent = formatBRL(balance);
+    bankBalance.classList.toggle('negative', balance < 0);
+    bankTotalDeposits.textContent = formatBRL(totals.deposits);
+    bankTotalWithdrawals.textContent = formatBRL(totals.withdrawals);
+    bankHistoryList.innerHTML = '';
+
+    if (bankData.length === 0) {
+      bankEmptyState.classList.remove('hidden');
+      return;
+    }
+
+    bankEmptyState.classList.add('hidden');
+    bankData.forEach(transaction => {
+      const isDeposit = transaction.type === 'deposit';
+      const item = document.createElement('div');
+      const date = new Date(transaction.createdAt);
+      const dateText = Number.isNaN(date.getTime())
+        ? 'Data não informada'
+        : date.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      item.className = `bank-history-item ${isDeposit ? 'deposit' : 'withdrawal'}`;
+      item.innerHTML = `
+        <div class="bank-history-icon"><i class="fa-solid ${isDeposit ? 'fa-arrow-down' : 'fa-arrow-up'}"></i></div>
+        <div class="bank-history-details">
+          <strong>${isDeposit ? 'Depósito' : 'Saque'}</strong>
+          <span>${escapeHtml(transaction.note || 'Sem descrição')} · ${dateText}</span>
+        </div>
+        <strong class="bank-history-amount">${isDeposit ? '-' : '+'} ${formatBRL(transaction.amount)}</strong>
+      `;
+      bankHistoryList.appendChild(item);
+    });
+  }
+
+  if (bankTransactionForm) {
+    bankTransactionForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      hideBankError();
+
+      const type = bankTransactionType.value;
+      const amount = Number.parseFloat(bankTransactionAmount.value);
+      const note = bankTransactionNote.value.trim();
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        showBankError('Informe um valor maior que zero.');
+        return;
+      }
+
+      bankData.unshift({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        type,
+        amount,
+        note,
+        createdAt: new Date().toISOString()
+      });
+      saveBankData();
+      renderBank();
+      bankTransactionForm.reset();
+      bankTransactionAmount.focus();
+    });
+  }
+
+  if (btnClearBank) {
+    btnClearBank.addEventListener('click', () => {
+      if (bankData.length === 0) return;
+      if (!confirm('Deseja realmente limpar todo o histórico da banca?')) return;
+      bankData = [];
+      saveBankData();
+      renderBank();
+    });
   }
 
   function renderTips() {
@@ -342,6 +465,84 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnCopyMemberLink = document.getElementById('btnCopyMemberLink');
   const copyLinkText = document.getElementById('copyLinkText');
 
+  // Elementos da aba de Batalhas
+  const battleParticipantCount = document.getElementById('battleParticipantCount');
+  const battleParticipantsPicker = document.getElementById('battleParticipantsPicker');
+  const battleSelectionCount = document.getElementById('battleSelectionCount');
+  const battlePickerHint = document.getElementById('battlePickerHint');
+  const battleEmptyState = document.getElementById('battleEmptyState');
+  const btnStartBattle = document.getElementById('btnStartBattle');
+  const battleSetup = document.getElementById('battleSetup');
+  const battleChampionState = document.getElementById('battleChampionState');
+  const battleChampionName = document.getElementById('battleChampionName');
+  const btnNewBattle = document.getElementById('btnNewBattle');
+  const battleRoundTitle = document.getElementById('battleRoundTitle');
+  const battleRoundBadge = document.getElementById('battleRoundBadge');
+  const battleBracket = document.getElementById('battleBracket');
+
+  let battleMembers = [];
+  let battleSelectedIds = new Set();
+  let battleRounds = [];
+  let battleCurrentRound = 0;
+  let battleChampion = null;
+
+  function saveBattleState() {
+    try {
+      if (!battleRounds.length) {
+        localStorage.removeItem('barbeiro_battle');
+        return;
+      }
+      localStorage.setItem('barbeiro_battle', JSON.stringify({
+        selectedIds: [...battleSelectedIds],
+        currentRound: battleCurrentRound,
+        championId: battleChampion ? battleChampion.id : null,
+        rounds: battleRounds.map(round => round.map(match => ({
+          participantIds: match.map(participant => participant.id),
+          winnerId: match.winner ? match.winner.id : null
+        })))
+      }));
+    } catch (error) {
+      console.warn('[Battle] Não foi possível salvar a batalha:', error);
+    }
+  }
+
+  function restoreBattleState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('barbeiro_battle') || 'null');
+      if (!saved || !Array.isArray(saved.rounds) || !saved.rounds.length) return;
+
+      const memberById = new Map(battleMembers.map(member => [member.id, member]));
+      const restoredRounds = saved.rounds.map(round => round.map(match => {
+        const participants = match.participantIds.map(id => memberById.get(id)).filter(Boolean);
+        if (participants.length !== 2) return null;
+        const restoredMatch = [participants[0], participants[1]];
+        restoredMatch.winner = match.winnerId ? memberById.get(match.winnerId) : null;
+        return restoredMatch;
+      }).filter(Boolean));
+
+      if (restoredRounds.some(round => !round.length) || !restoredRounds.length) {
+        localStorage.removeItem('barbeiro_battle');
+        return;
+      }
+
+      battleSelectedIds = new Set((saved.selectedIds || []).filter(id => memberById.has(id)));
+      battleRounds = restoredRounds;
+      battleCurrentRound = Math.min(saved.currentRound || 0, battleRounds.length - 1);
+      battleChampion = saved.championId ? memberById.get(saved.championId) || null : null;
+      battleSetup.classList.toggle('hidden', Boolean(battleRounds.length));
+      battleChampionState.classList.toggle('hidden', !battleChampion);
+      if (battleChampion) {
+        battleChampionName.textContent = battleChampion.name;
+        battleRoundTitle.textContent = 'Campeão definido';
+        battleRoundBadge.textContent = 'FINALIZADO';
+      } else {
+        renderBattleBracket();
+      }
+    } catch (error) {
+      localStorage.removeItem('barbeiro_battle');
+    }
+  }
+
   // Elementos do Modal de Dar Gorjeta
   const memberTipModal = document.getElementById('memberTipModal');
   const btnCloseMemberTipModal = document.getElementById('btnCloseMemberTipModal');
@@ -370,6 +571,201 @@ document.addEventListener('DOMContentLoaded', async () => {
     const domain = email.substring(atIndex + 1);
     return `${user.substring(0, 4)}${user.length > 4 ? '***' : ''}@${domain}`;
   }
+
+  function getBattleCount() {
+    return parseInt(battleParticipantCount ? battleParticipantCount.value : '2', 10);
+  }
+
+  async function loadBattleMembers() {
+    if (!battleParticipantsPicker) return;
+    battleMembers = window.MembersModule ? await window.MembersModule.loadMembers() : [];
+    restoreBattleState();
+    renderBattlePicker();
+  }
+
+  function renderBattlePicker() {
+    if (!battleParticipantsPicker) return;
+    const limit = getBattleCount();
+    battleSelectedIds = new Set([...battleSelectedIds].filter(id => battleMembers.some(member => member.id === id)).slice(0, limit));
+    battleParticipantsPicker.innerHTML = '';
+
+    if (battleMembers.length === 0) {
+      battleEmptyState.classList.remove('hidden');
+      btnStartBattle.disabled = true;
+      updateBattleSelection();
+      return;
+    }
+
+    battleEmptyState.classList.add('hidden');
+    battleMembers.forEach(member => {
+      const isSelected = battleSelectedIds.has(member.id);
+      const item = document.createElement('label');
+      item.className = `battle-participant-option${isSelected ? ' selected' : ''}`;
+      item.innerHTML = `
+        <input type="checkbox" value="${escapeHtml(member.id)}"${isSelected ? ' checked' : ''}>
+        <span class="battle-option-avatar">${getInitials(member.name)}</span>
+        <span class="battle-option-name">${escapeHtml(member.name)}</span>
+        <i class="fa-solid fa-check battle-option-check"></i>
+      `;
+      const checkbox = item.querySelector('input');
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked && battleSelectedIds.size >= limit) {
+          checkbox.checked = false;
+          alert(`Esta batalha precisa de exatamente ${limit} participantes.`);
+          return;
+        }
+        if (checkbox.checked) battleSelectedIds.add(member.id);
+        else battleSelectedIds.delete(member.id);
+        item.classList.toggle('selected', checkbox.checked);
+        updateBattleSelection();
+      });
+      battleParticipantsPicker.appendChild(item);
+    });
+    updateBattleSelection();
+  }
+
+  function updateBattleSelection() {
+    const limit = getBattleCount();
+    const selected = battleSelectedIds.size;
+    if (battleSelectionCount) battleSelectionCount.textContent = `${selected}/${limit}`;
+    if (battlePickerHint) {
+      battlePickerHint.textContent = selected === limit
+        ? 'Tudo pronto. Confira os nomes e inicie a batalha.'
+        : `Selecione mais ${limit - selected} participante${limit - selected === 1 ? '' : 's'} para começar.`;
+    }
+    if (btnStartBattle) btnStartBattle.disabled = selected !== limit;
+  }
+
+  function renderBattleBracket() {
+    if (!battleBracket || !battleRounds.length) return;
+    const matches = battleRounds[battleCurrentRound];
+    const roundName = matches.length === 1
+      ? 'Final'
+      : matches.length === 2
+        ? 'Semifinais'
+        : matches.length === 4
+          ? 'Quartas de final'
+          : 'Oitavas de final';
+    battleRoundTitle.textContent = roundName;
+    battleRoundBadge.textContent = `${matches.length} ${matches.length === 1 ? 'CONFRONTO' : 'CONFRONTOS'}`;
+    battleBracket.innerHTML = '';
+
+    matches.forEach((match, index) => {
+      const card = document.createElement('div');
+      card.className = 'battle-match';
+      card.innerHTML = `
+        <div class="battle-match-label">CONFRONTO ${index + 1}</div>
+        <div class="battle-duel">
+          <button type="button" class="battle-fighter" data-winner="0">
+            <span class="battle-fighter-number">${index * 2 + 1}</span>
+            <span>${escapeHtml(match[0].name)}</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <div class="battle-vs">VS</div>
+          <button type="button" class="battle-fighter" data-winner="1">
+            <span class="battle-fighter-number">${index * 2 + 2}</span>
+            <span>${escapeHtml(match[1].name)}</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+        <p class="battle-confirm-hint"><i class="fa-solid fa-hand-pointer"></i> Clique no vencedor e confirme o avanço</p>
+      `;
+      card.querySelectorAll('.battle-fighter').forEach(button => {
+        button.addEventListener('click', () => advanceBattle(index, Number(button.dataset.winner)));
+      });
+      if (match.winner) {
+        const winnerIndex = match[0].id === match.winner.id ? 0 : 1;
+        const winnerButton = card.querySelector(`[data-winner="${winnerIndex}"]`);
+        if (winnerButton) winnerButton.classList.add('winner-selected');
+        card.querySelectorAll('.battle-fighter').forEach(button => {
+          button.disabled = true;
+        });
+      }
+      battleBracket.appendChild(card);
+    });
+  }
+
+  function startBattle() {
+    const participants = [...battleSelectedIds]
+      .map(id => battleMembers.find(member => member.id === id))
+      .filter(Boolean);
+    const firstRound = [];
+    battleCurrentRound = 0;
+    for (let index = 0; index < participants.length; index += 2) {
+      firstRound.push([participants[index], participants[index + 1]]);
+    }
+    battleRounds = [firstRound];
+    battleChampion = null;
+    battleSetup.classList.add('hidden');
+    battleChampionState.classList.add('hidden');
+    saveBattleState();
+    renderBattleBracket();
+  }
+
+  function advanceBattle(matchIndex, winnerIndex) {
+    const match = battleRounds[battleCurrentRound][matchIndex];
+    const winner = match[winnerIndex];
+    const loser = match[1 - winnerIndex];
+    if (!confirm(`Confirmar ${winner.name} como vencedor contra ${loser.name}?\n\nEssa decisão avança o participante para a próxima rodada.`)) return;
+
+    match.winner = winner;
+    const allMatchesFinished = battleRounds[battleCurrentRound].every(currentMatch => currentMatch.winner);
+    if (!allMatchesFinished) {
+      const matchCard = battleBracket.querySelectorAll('.battle-match')[matchIndex];
+      const selectedButton = matchCard.querySelector(`[data-winner="${winnerIndex}"]`);
+      selectedButton.classList.add('winner-selected');
+      matchCard.querySelectorAll('.battle-fighter').forEach(button => {
+        button.disabled = true;
+      });
+      saveBattleState();
+      return;
+    }
+
+    const winners = battleRounds[battleCurrentRound].map(currentMatch => currentMatch.winner);
+    if (winners.length === 1) {
+      showBattleChampion(winners[0]);
+      return;
+    }
+    battleCurrentRound += 1;
+    battleRounds.push([]);
+    for (let index = 0; index < winners.length; index += 2) {
+      battleRounds[battleCurrentRound].push([winners[index], winners[index + 1]]);
+    }
+    saveBattleState();
+    renderBattleBracket();
+  }
+
+  function showBattleChampion(champion) {
+    battleChampion = champion;
+    battleBracket.innerHTML = `
+      <div class="bracket-complete"><i class="fa-solid fa-check-double"></i><p>Chave encerrada</p></div>
+    `;
+    battleRoundTitle.textContent = 'Campeão definido';
+    battleRoundBadge.textContent = 'FINALIZADO';
+    battleChampionName.textContent = champion.name;
+    battleSetup.classList.add('hidden');
+    battleChampionState.classList.remove('hidden');
+    battleChampionState.classList.add('champion-reveal');
+    saveBattleState();
+  }
+
+  function resetBattle() {
+    battleSelectedIds = new Set();
+    battleRounds = [];
+    battleCurrentRound = 0;
+    battleChampion = null;
+    localStorage.removeItem('barbeiro_battle');
+    battleChampionState.classList.add('hidden');
+    battleSetup.classList.remove('hidden');
+    battleRoundTitle.textContent = 'Aguardando participantes';
+    battleRoundBadge.textContent = 'MATA-MATA';
+    battleBracket.innerHTML = '<div class="battle-placeholder"><i class="fa-solid fa-shield-halved"></i><p>Escolha os participantes para gerar a chave.</p></div>';
+    renderBattlePicker();
+  }
+
+  if (battleParticipantCount) battleParticipantCount.addEventListener('change', renderBattlePicker);
+  if (btnStartBattle) btnStartBattle.addEventListener('click', startBattle);
+  if (btnNewBattle) btnNewBattle.addEventListener('click', resetBattle);
 
   /** Mostra skeleton de carregamento no grid de membros */
   function showMembersLoading() {
@@ -665,6 +1061,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       tipsData = loadTips();
       renderTips();
     }
+    if (e.key === 'barbeiro_bank') {
+      bankData = loadBankData();
+      renderBank();
+    }
   });
 
   // Recarregar membros ao trocar para a aba de Membros
@@ -672,6 +1072,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     btn.addEventListener('click', () => {
       if (btn.getAttribute('data-target') === 'tabMembers') {
         renderMembers(membersSearchInput ? membersSearchInput.value : '');
+      }
+      if (btn.getAttribute('data-target') === 'tabBattles') {
+        loadBattleMembers();
       }
     });
   });
@@ -684,5 +1087,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Iniciar checagem de sessão e renderizar dados iniciais
   checkSession();
   renderTips();
+  renderBank();
   await renderMembers();
+  await loadBattleMembers();
 });

@@ -30,6 +30,7 @@ class RouletteWheel {
     this.currentAngle = 0; // Radianos
     this.isSpinning = false;
     this.lastTickSlice = -1;
+    this.targetWinnerIndex = null;
 
     // Elementos do DOM
     this.pointerEl = document.getElementById('wheelPointer');
@@ -170,11 +171,18 @@ class RouletteWheel {
       const saved = localStorage.getItem('barbeiro_roulette_participants');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Remove o participante de exemplo usado nas versões anteriores.
+          if (parsed.length === 1 && parsed[0] === 'Barbeiro') {
+            localStorage.removeItem('barbeiro_roulette_participants');
+            return [];
+          }
+          return parsed;
+        }
       }
     } catch (e) { }
-    // Padrão inicial caso não haja nada cadastrado ainda
-    return ['Barbeiro'];
+    // A roleta começa vazia até o administrador adicionar participantes.
+    return [];
   }
 
   saveParticipants() {
@@ -404,14 +412,19 @@ class RouletteWheel {
 
     // Duração do giro entre 4.5s e 5.5s
     const spinDuration = 4800 + Math.random() * 800;
-    // Rotações completas (5 a 8 voltas) + deslocamento aleatório
-    const totalRotation = (Math.PI * 2) * (5 + Math.floor(Math.random() * 4)) + Math.random() * Math.PI * 2;
-
     const startAngle = this.currentAngle;
+    const totalAngle = Math.PI * 2;
+    const winnerIndex = Math.floor(Math.random() * this.participants.length);
+    const sliceAngle = totalAngle / this.participants.length;
+    const pointerAngle = (3 * Math.PI) / 2;
+    const normalizedStart = (startAngle % totalAngle + totalAngle) % totalAngle;
+    const winnerCenterAngle = (winnerIndex + 0.5) * sliceAngle;
+    const targetOffset = (pointerAngle - winnerCenterAngle - normalizedStart + totalAngle) % totalAngle;
+    const totalRotation = totalAngle * (5 + Math.floor(Math.random() * 4)) + targetOffset;
+
+    this.targetWinnerIndex = winnerIndex;
     const targetAngle = startAngle + totalRotation;
     const startTime = performance.now();
-
-    const sliceAngle = (Math.PI * 2) / this.participants.length;
 
     const animateSpin = (now) => {
       const elapsed = now - startTime;
@@ -451,16 +464,11 @@ class RouletteWheel {
     if (this.btnSpin) this.btnSpin.disabled = false;
     if (this.btnSpinCenter) this.btnSpinCenter.disabled = false;
 
-    // Calcular vencedor precisamente no ponteiro superior (270 graus / 3*PI/2)
-    const total = this.participants.length;
-    const sliceAngle = (Math.PI * 2) / total;
-    const pointerAngle = (3 * Math.PI) / 2;
-
-    const normalizedAngle = (this.currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-    const relativeAngle = (pointerAngle - normalizedAngle + Math.PI * 2) % (Math.PI * 2);
-    const winnerIndex = Math.floor(relativeAngle / sliceAngle) % total;
+    // O índice foi sorteado antes da animação e a roleta foi posicionada nessa fatia.
+    const winnerIndex = this.targetWinnerIndex ?? Math.floor(Math.random() * this.participants.length);
 
     this.currentWinner = this.participants[winnerIndex];
+    this.targetWinnerIndex = null;
 
     this.playWinSound();
     this.showConfetti();

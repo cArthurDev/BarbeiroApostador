@@ -27,7 +27,7 @@
           <i class="fa-solid fa-scissors"></i>
           <span>ÁREA RESTRITA</span>
         </div>
-        <h1 class="brand-title">Barbeiro Apostador</h1>
+        <img class="login-logo" src="images/logo.png" alt="Barbeiro Apostador" />
         <p class="brand-subtitle">Insira suas credenciais para gerenciar gorjetas e roleta</p>
       </div>
 
@@ -86,11 +86,8 @@
     <header class="app-header">
       <div class="header-content container">
         <div class="logo-area">
-          <div class="logo-icon">
-            <i class="fa-solid fa-dice-d20"></i>
-          </div>
+          <img class="site-logo" src="images/logo.png" alt="Barbeiro Apostador" />
           <div class="logo-text">
-            <h1 class="logo-title">Barbeiro Apostador</h1>
             <span class="logo-status"><span class="status-dot"></span> Painel Ativo</span>
           </div>
         </div>
@@ -111,6 +108,14 @@
             <i class="fa-solid fa-users"></i>
             <span>Membros</span>
             <span class="badge" id="membersCountBadge">0</span>
+          </button>
+          <button class="tab-btn" id="tabBtnBattles" data-target="tabBattles" role="tab" aria-selected="false">
+            <i class="fa-solid fa-trophy"></i>
+            <span>Batalhas</span>
+          </button>
+          <button class="tab-btn" id="tabBtnBank" data-target="tabBank" role="tab" aria-selected="false">
+            <i class="fa-solid fa-vault"></i>
+            <span>Banca</span>
           </button>
         </nav>
 
@@ -424,6 +429,179 @@
             </div>
           </div>
 
+        </div>
+      </section>
+
+      <!-- ================= ABA 4: BATALHAS ================= -->
+      <section id="tabBattles" class="tab-pane">
+        <div class="battles-layout">
+          <div class="glass-card battle-setup-card">
+            <div class="card-header">
+              <div class="header-icon battle-icon"><i class="fa-solid fa-trophy"></i></div>
+              <div>
+                <h2>Chave de Batalhas</h2>
+                <p>Monte um mata-mata no estilo Copa do Mundo</p>
+              </div>
+            </div>
+
+            <div id="battleSetup">
+              <div class="battle-rule-note">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Escolha apenas quantidades pares em potência de 2: 2, 4, 8, 16 ou 32 participantes.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="battleParticipantCount">Quantidade de participantes</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-users input-icon"></i>
+                  <select id="battleParticipantCount" class="battle-select">
+                    <option value="2">2 participantes</option>
+                    <option value="4">4 participantes</option>
+                    <option value="8">8 participantes</option>
+                    <option value="16">16 participantes</option>
+                    <option value="32">32 participantes</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="battle-picker-header">
+                <div>
+                  <h3>Participantes cadastrados</h3>
+                  <p id="battlePickerHint">Selecione 2 pessoas para começar.</p>
+                </div>
+                <span class="battle-selection-count" id="battleSelectionCount">0/2</span>
+              </div>
+              <div class="battle-participants-picker" id="battleParticipantsPicker"></div>
+              <div class="battle-empty-state hidden" id="battleEmptyState">
+                <i class="fa-solid fa-user-plus"></i>
+                <p>Nenhum membro cadastrado. Cadastre participantes pela página de membros para montar a batalha.</p>
+              </div>
+              <button type="button" class="btn-primary btn-block" id="btnStartBattle" disabled>
+                <i class="fa-solid fa-play"></i>
+                <span>Iniciar Batalha</span>
+              </button>
+            </div>
+
+            <div id="battleChampionState" class="battle-champion-state hidden">
+              <div class="champion-cup"><i class="fa-solid fa-trophy"></i></div>
+              <span class="champion-kicker">CAMPEÃO DA BATALHA</span>
+              <h2 id="battleChampionName"></h2>
+              <p>Vitória confirmada em todas as rodadas!</p>
+              <button type="button" class="btn-secondary" id="btnNewBattle">
+                <i class="fa-solid fa-rotate"></i>
+                <span>Nova Batalha</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card battle-bracket-card">
+            <div class="battle-bracket-header">
+              <div>
+                <span class="eyebrow-label"><i class="fa-solid fa-sitemap"></i> CHAVEAMENTO</span>
+                <h2 id="battleRoundTitle">Aguardando participantes</h2>
+              </div>
+              <span class="battle-round-badge" id="battleRoundBadge">MATA-MATA</span>
+            </div>
+            <div class="battle-bracket" id="battleBracket">
+              <div class="battle-placeholder">
+                <i class="fa-solid fa-shield-halved"></i>
+                <p>Escolha os participantes para gerar a chave.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= ABA 5: GESTÃO DE BANCA ================= -->
+      <section id="tabBank" class="tab-pane">
+        <div class="bank-layout">
+          <div class="glass-card bank-control-card">
+            <div class="card-header">
+              <div class="header-icon bank-icon"><i class="fa-solid fa-vault"></i></div>
+              <div>
+                <h2>Gestão de Banca</h2>
+                <p>Controle depósitos, saques e saldo do cassino</p>
+              </div>
+            </div>
+
+            <div class="bank-balance-panel">
+              <span class="bank-balance-label">Saldo disponível</span>
+              <strong id="bankBalance">R$ 0,00</strong>
+              <span class="bank-balance-caption">Saques recebidos menos depósitos realizados</span>
+            </div>
+
+            <div class="bank-summary-grid">
+              <div class="bank-summary-item deposit-summary">
+                <span><i class="fa-solid fa-arrow-down"></i> Total investido</span>
+                <strong id="bankTotalDeposits">R$ 0,00</strong>
+              </div>
+              <div class="bank-summary-item withdraw-summary">
+                <span><i class="fa-solid fa-arrow-up"></i> Total recebido</span>
+                <strong id="bankTotalWithdrawals">R$ 0,00</strong>
+              </div>
+            </div>
+
+            <form id="bankTransactionForm" class="bank-transaction-form">
+              <div class="bank-form-heading">
+                <h3>Registrar movimentação</h3>
+                <p>O saldo é atualizado na hora.</p>
+              </div>
+              <div class="form-group">
+                <label for="bankTransactionType">Tipo de movimentação</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-right-left input-icon"></i>
+                  <select id="bankTransactionType" class="bank-select">
+                    <option value="deposit">Depósito</option>
+                    <option value="withdrawal">Saque</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="bankTransactionAmount">Valor (R$)</label>
+                <div class="input-wrapper">
+                  <span class="currency-prefix">R$</span>
+                  <input type="number" id="bankTransactionAmount" min="0.01" step="0.01" placeholder="0,00" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="bankTransactionNote">Descrição <span class="field-hint">Opcional</span></label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-note-sticky input-icon"></i>
+                  <input type="text" id="bankTransactionNote" maxlength="80" placeholder="Ex: Caixa inicial do dia" />
+                </div>
+              </div>
+              <div id="bankTransactionError" class="login-error hidden" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span></span>
+              </div>
+              <button type="submit" class="btn-primary btn-block">
+                <i class="fa-solid fa-plus"></i>
+                <span>Registrar movimentação</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="glass-card bank-history-card">
+            <div class="bank-history-header">
+              <div class="card-header">
+                <div class="header-icon"><i class="fa-solid fa-receipt"></i></div>
+                <div>
+                  <h2>Histórico da banca</h2>
+                  <p>Movimentações registradas neste painel</p>
+                </div>
+              </div>
+              <button type="button" id="btnClearBank" class="btn-outline-danger" title="Limpar histórico da banca">
+                <i class="fa-regular fa-trash-can"></i>
+                <span>Limpar</span>
+              </button>
+            </div>
+            <div id="bankHistoryList" class="bank-history-list"></div>
+            <div id="bankEmptyState" class="bank-empty-state">
+              <i class="fa-solid fa-scale-balanced"></i>
+              <h3>Nenhuma movimentação ainda</h3>
+              <p>Registre um depósito para começar a acompanhar sua banca.</p>
+            </div>
+          </div>
         </div>
       </section>
 
