@@ -231,16 +231,26 @@
         if (errorBox) errorBox.classList.add('hidden');
       }
 
+      function maskEmail(email) {
+        if (!email || !email.includes('@')) return email;
+
+        const atIndex = email.indexOf('@');
+        const user = email.substring(0, atIndex);
+        const domain = email.substring(atIndex + 1);
+        return `${user.substring(0, 4)}${user.length > 4 ? '***' : ''}@${domain}`;
+      }
+
       function showSuccess(member) {
         hideError();
         if (successBox && successText) {
+          const maskedEmail = maskEmail(member.email);
           successText.innerHTML = `Parabéns, <strong>${member.name}</strong>! Seu cadastro foi concluído com sucesso.`;
           detailsBox.innerHTML = `
             <div class="registered-chip">
               <i class="fa-brands fa-twitch"></i> @${member.twitch}
             </div>
             <div class="registered-chip">
-              <i class="fa-regular fa-envelope"></i> ${member.email}
+              <i class="fa-regular fa-envelope"></i> ${maskedEmail}
             </div>
           `;
           successBox.classList.remove('hidden');

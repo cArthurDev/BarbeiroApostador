@@ -362,6 +362,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
+  function maskEmail(email) {
+    if (!email || !email.includes('@')) return email;
+
+    const atIndex = email.indexOf('@');
+    const user = email.substring(0, atIndex);
+    const domain = email.substring(atIndex + 1);
+    return `${user.substring(0, 4)}${user.length > 4 ? '***' : ''}@${domain}`;
+  }
+
   /** Mostra skeleton de carregamento no grid de membros */
   function showMembersLoading() {
     if (!membersCardsGrid) return;
@@ -437,7 +446,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="member-card-body">
           <div class="member-info-row" title="E-mail">
             <i class="fa-regular fa-envelope info-row-icon"></i>
-            <span class="info-row-text">${escapeHtml(member.email)}</span>
+            <span class="info-row-text">${escapeHtml(maskEmail(member.email))}</span>
           </div>
           <div class="member-info-row" title="Data de cadastro">
             <i class="fa-regular fa-calendar info-row-icon"></i>

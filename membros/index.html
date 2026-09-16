@@ -221,15 +221,8 @@
         if (!email || !email.includes('@')) return email;
 
         const [user, domain] = email.split('@');
-
-        if (user.length <= 4) {
-          // Se o usuário tiver 4 ou menos caracteres, exibe o primeiro e oculta o restante
-          return `${user.charAt(0)}***@${domain}`;
-        }
-
-        // Mantém os 4 primeiros caracteres do usuário e mascara o restante
         const visiblePart = user.substring(0, 4);
-        return `${visiblePart}***@${domain}`;
+        return `${visiblePart}${user.length > 4 ? '***' : ''}@${domain}`;
       }
 
       function showSuccess(member) {
