@@ -258,14 +258,17 @@
 
       // Validação em tempo real com debounce (evita múltiplas requisições ao Supabase)
       let twitchCheckDebounce = null;
+      let twitchValidationVersion = 0;
       twitchInput.addEventListener('input', () => {
         const nick = twitchInput.value.trim().replace(/^@+/, '');
+        const validationVersion = ++twitchValidationVersion;
         twitchInput.classList.remove('input-invalid');
         clearTimeout(twitchCheckDebounce);
 
         if (nick.length >= 2) {
           twitchCheckDebounce = setTimeout(async () => {
             const alreadyExists = await MembersModule.isTwitchNickRegistered(nick);
+            if (validationVersion !== twitchValidationVersion || btnSubmit.disabled) return;
             if (alreadyExists) {
               showError(`O nick "@${nick}" já foi cadastrado anteriormente.`);
               twitchInput.classList.add('input-invalid');
@@ -281,6 +284,8 @@
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        twitchValidationVersion++;
+        clearTimeout(twitchCheckDebounce);
         hideError();
 
         const name = nameInput.value;
