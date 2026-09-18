@@ -93,7 +93,7 @@
     <header class="app-header">
       <div class="header-content container">
         <div class="logo-area">
-          <img class="site-logo" src="images/logo.png" alt="Barbeiro Apostador" />
+          <img class="site-logo" id="secretLogoTrigger" src="images/logo.png" alt="Barbeiro Apostador" title="" />
           <div class="logo-text">
             <span class="logo-status"><span class="status-dot"></span> Painel Ativo</span>
           </div>
@@ -406,7 +406,7 @@
             </button>
           </div>
 
-          <div class="glass-card slots-list-card">
+          <div class="glass-card slots-list-card hidden">
             <div class="card-header justify-between">
               <div class="flex-align">
                 <div class="header-icon"><i class="fa-solid fa-gamepad"></i></div>
@@ -420,7 +420,7 @@
               </button>
             </div>
 
-            <form id="slotForm" class="slot-form">
+            <form id="slotForm" class="slot-form hidden">
               <div class="input-wrapper">
                 <i class="fa-solid fa-plus input-icon"></i>
                 <input type="text" id="slotGameInput" maxlength="60" placeholder="Ex: Sweet Bonanza" required />
@@ -430,9 +430,9 @@
               </button>
             </form>
 
-            <div class="slots-bulk-tip"><i class="fa-solid fa-lightbulb"></i> Você pode adicionar vários jogos rapidamente, um por linha.</div>
-            <textarea id="slotBulkInput" class="slot-bulk-input" rows="4" placeholder="Ex:&#10;Fortune Tiger&#10;Gates of Olympus&#10;Big Bass Splash"></textarea>
-            <button type="button" id="btnAddBulkSlots" class="btn-secondary btn-block"><i class="fa-solid fa-list"></i><span>Adicionar lista</span></button>
+            <div class="slots-bulk-tip"><i class="fa-solid fa-cloud"></i> Lista compartilhada para todos os acessos.</div>
+            <textarea id="slotBulkInput" class="slot-bulk-input hidden" rows="4" placeholder="Ex:&#10;Fortune Tiger&#10;Gates of Olympus&#10;Big Bass Splash"></textarea>
+            <button type="button" id="btnAddBulkSlots" class="btn-secondary btn-block hidden"><i class="fa-solid fa-list"></i><span>Adicionar lista</span></button>
 
             <div class="slots-list-header">
               <span>Na máquina (<strong id="slotsCountText">0</strong>)</span>
@@ -769,6 +769,23 @@
           <i class="fa-solid fa-check"></i>
           <span>Manter na Roleta</span>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU SECRETO DE GERENCIAMENTO DOS SLOTS -->
+  <div id="slotAdminModal" class="modal-overlay hidden">
+    <div class="modal-card slot-admin-card">
+      <button type="button" id="btnCloseSlotAdmin" class="modal-close" title="Fechar menu"><i class="fa-solid fa-xmark"></i></button>
+      <div class="trophy-badge slot-admin-badge"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+      <span class="winner-subtitle">GERENCIAR SLOTS</span>
+      <h2 class="winner-name">Lista compartilhada</h2>
+      <p class="winner-desc">Edite todos os jogos abaixo. A lista será salva para todos no Supabase.</p>
+      <textarea id="slotAdminInput" class="slot-admin-input" rows="10" placeholder="Um jogo por linha"></textarea>
+      <div id="slotAdminStatus" class="slot-admin-status" aria-live="polite"></div>
+      <div class="modal-actions">
+        <button type="button" id="btnClearSlotAdmin" class="btn-outline-danger"><i class="fa-regular fa-trash-can"></i><span>Limpar lista</span></button>
+        <button type="button" id="btnSaveSlotAdmin" class="btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i><span>Salvar lista</span></button>
       </div>
     </div>
   </div>

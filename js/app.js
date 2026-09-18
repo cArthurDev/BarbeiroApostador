@@ -74,8 +74,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const slotDrawCard = document.getElementById('slotDrawCard');
   const slotCardGame = document.getElementById('slotCardGame');
   const slotCardStatus = document.getElementById('slotCardStatus');
+  const secretLogoTrigger = document.getElementById('secretLogoTrigger');
+  const slotAdminModal = document.getElementById('slotAdminModal');
+  const btnCloseSlotAdmin = document.getElementById('btnCloseSlotAdmin');
+  const slotAdminInput = document.getElementById('slotAdminInput');
+  const slotAdminStatus = document.getElementById('slotAdminStatus');
+  const btnSaveSlotAdmin = document.getElementById('btnSaveSlotAdmin');
+  const btnClearSlotAdmin = document.getElementById('btnClearSlotAdmin');
   let slotGames = loadSlotGames();
   let slotIsSpinning = false;
+  let logoClickCount = 0;
+  let logoClickTimer = null;
 
   // Armazenamento das Gorjetas
   let tipsData = loadTips();
@@ -95,6 +104,106 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       localStorage.setItem('barbeiro_slot_games', JSON.stringify(slotGames));
     } catch (error) {}
+
+    saveSharedSlotGames();
+  }
+
+  async function loadSharedSlotGames() {
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/slot_games?id=eq.1&select=games`, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      });
+      if (!response.ok) throw new Error(`Supabase ${response.status}`);
+      const rows = await response.json();
+      if (rows[0] && Array.isArray(rows[0].games)) {
+        slotGames = rows[0].games.filter(game => typeof game === 'string' && game.trim());
+        localStorage.setItem('barbeiro_slot_games', JSON.stringify(slotGames));
+        renderSlotGames();
+        renderSlotCard(slotGames.length ? slotGames[0] : 'Adicione seus jogos');
+      }
+    } catch (error) {
+      console.warn('[Slots] Supabase indisponível; usando lista local.', error);
+    }
+  }
+
+  async function saveSharedSlotGames() {
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/slot_games`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          Prefer: 'resolution=merge-duplicates,return=minimal'
+        },
+        body: JSON.stringify({ id: 1, games: slotGames, updated_at: new Date().toISOString() })
+      });
+      if (!response.ok) throw new Error(`Supabase ${response.status}`);
+      return true;
+    } catch (error) {
+      console.warn('[Slots] Não foi possível salvar no Supabase.', error);
+      return false;
+    }
+  }
+
+  function setSlotAdminStatus(message, isError = false) {
+    if (!slotAdminStatus) return;
+    slotAdminStatus.textContent = message;
+    slotAdminStatus.classList.toggle('error', isError);
+  }
+
+  function openSlotAdmin() {
+    slotAdminInput.value = slotGames.join('\n');
+    setSlotAdminStatus('');
+    slotAdminModal.classList.remove('hidden');
+    setTimeout(() => slotAdminInput.focus(), 50);
+  }
+
+  function closeSlotAdmin() {
+    slotAdminModal.classList.add('hidden');
+  }
+
+  if (secretLogoTrigger) {
+    secretLogoTrigger.addEventListener('click', () => {
+      logoClickCount += 1;
+      clearTimeout(logoClickTimer);
+      logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1400);
+      if (logoClickCount === 4) {
+        logoClickCount = 0;
+        openSlotAdmin();
+      }
+    });
+  }
+
+  if (btnCloseSlotAdmin) btnCloseSlotAdmin.addEventListener('click', closeSlotAdmin);
+  if (slotAdminModal) {
+    slotAdminModal.addEventListener('click', event => {
+      if (event.target === slotAdminModal) closeSlotAdmin();
+    });
+  }
+
+  if (btnSaveSlotAdmin) {
+    btnSaveSlotAdmin.addEventListener('click', async () => {
+      slotGames = slotAdminInput.value.split(/\r?\n/).map(game => game.trim()).filter(Boolean);
+      slotGames = [...new Set(slotGames)];
+      saveSlotGames();
+      renderSlotGames();
+      renderSlotCard(slotGames.length ? slotGames[0] : 'Adicione seus jogos');
+      const savedRemotely = await saveSharedSlotGames();
+      setSlotAdminStatus(savedRemotely
+        ? 'Lista salva para todos.'
+        : 'Salva apenas neste navegador. Execute o SQL do Supabase para sincronizar.');
+    });
+  }
+
+  if (btnClearSlotAdmin) {
+    btnClearSlotAdmin.addEventListener('click', () => {
+      slotAdminInput.value = '';
+      setSlotAdminStatus('Clique em "Salvar lista" para confirmar a limpeza.');
+    });
   }
 
   function renderSlotGames() {
@@ -196,6 +305,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   renderSlotGames();
   renderSlotCard(slotGames.length ? slotGames[0] : 'Adicione seus jogos');
+  loadSharedSlotGames();
 
   // ================= 1. AUTENTICAÇÃO =================
   function checkSession() {

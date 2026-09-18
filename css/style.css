@@ -1453,22 +1453,22 @@ button {
 }
 
 /* ================= ABA 3: SLOTS ALEATÓRIOS ================= */
-.slots-layout { display: grid; grid-template-columns: 1fr 400px; gap: 28px; align-items: start; }
-.slots-machine-card { min-height: 620px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(circle at 50% 38%, rgba(0, 136, 255, .22), transparent 42%), var(--bg-card); }
+.slots-layout { display: flex; justify-content: center; align-items: flex-start; width: 100%; }
+.slots-machine-card { width: min(100%, 820px); min-height: 720px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(circle at 50% 38%, rgba(0, 136, 255, .22), transparent 42%), var(--bg-card); }
 .slots-heading { text-align: center; margin-bottom: 26px; }
 .slots-heading h2 { font-size: 2rem; margin: 7px 0 4px; }
 .slots-heading p { color: var(--text-secondary); font-size: .9rem; }
 .slots-kicker { color: var(--blue-glow); font-size: .72rem; font-weight: 800; letter-spacing: 1.8px; }
-.slot-machine { width: min(100%, 560px); padding: 34px 28px 28px; border: 2px solid rgba(0, 210, 255, .72); border-radius: 24px; background: linear-gradient(155deg, #101f46, #071126 70%); box-shadow: 0 0 0 8px rgba(0, 0, 0, .18), 0 0 38px rgba(0, 162, 255, .42), inset 0 0 32px rgba(0, 0, 0, .5); position: relative; }
+.slot-machine { width: min(100%, 700px); padding: 44px 38px 38px; border: 2px solid rgba(0, 210, 255, .72); border-radius: 28px; background: linear-gradient(155deg, #101f46, #071126 70%); box-shadow: 0 0 0 8px rgba(0, 0, 0, .18), 0 0 48px rgba(0, 162, 255, .48), inset 0 0 32px rgba(0, 0, 0, .5); position: relative; }
 .slot-lights { height: 10px; border-radius: 99px; margin-bottom: 28px; background: repeating-linear-gradient(90deg, #00d2ff 0 14px, transparent 14px 28px); box-shadow: 0 0 14px #00d2ff; animation: slotLights 1s linear infinite; }
 @keyframes slotLights { to { background-position: 28px 0; } }
-.slot-card-stage { height: 220px; position: relative; display: flex; align-items: center; justify-content: center; perspective: 900px; }
-.slot-card-glow { position: absolute; width: 190px; height: 190px; border-radius: 50%; background: rgba(0, 162, 255, .35); filter: blur(28px); animation: cardGlow 1.8s ease-in-out infinite alternate; }
-.slot-draw-card { position: relative; z-index: 1; width: min(100%, 330px); height: 170px; padding: 24px 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; border: 2px solid #00d2ff; border-radius: 18px; background: linear-gradient(145deg, #0a2452, #071126 72%); color: #fff; box-shadow: 0 0 28px rgba(0, 162, 255, .6), inset 0 0 24px rgba(0, 210, 255, .1); transform-style: preserve-3d; }
+.slot-card-stage { height: 300px; position: relative; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+.slot-card-glow { position: absolute; width: 270px; height: 270px; border-radius: 50%; background: rgba(0, 162, 255, .35); filter: blur(38px); animation: cardGlow 1.8s ease-in-out infinite alternate; }
+.slot-draw-card { position: relative; z-index: 1; width: min(100%, 500px); height: 230px; padding: 32px 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; border: 3px solid #00d2ff; border-radius: 24px; background: linear-gradient(145deg, #0a2452, #071126 72%); color: #fff; box-shadow: 0 0 38px rgba(0, 162, 255, .7), inset 0 0 30px rgba(0, 210, 255, .1); transform-style: preserve-3d; }
 .slot-draw-card.is-flipping { animation: cardFlip .18s ease-in-out; }
 .slot-draw-card.is-revealed { animation: cardReveal .8s cubic-bezier(.2, .8, .2, 1); }
-.slot-card-suit { color: var(--blue-glow); font-size: 1.65rem; }
-.slot-draw-card strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-family: 'Outfit', sans-serif; font-size: clamp(1.15rem, 3vw, 1.7rem); }
+.slot-card-suit { color: var(--blue-glow); font-size: 2.2rem; }
+.slot-draw-card strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-family: 'Outfit', sans-serif; font-size: clamp(1.5rem, 3.5vw, 2.2rem); }
 .slot-draw-card small { color: var(--blue-glow); font-size: .68rem; font-weight: 800; letter-spacing: 1.6px; }
 @keyframes cardFlip { 0% { transform: rotateY(0) scale(1); } 50% { transform: rotateY(90deg) scale(.92); filter: brightness(1.6); } 100% { transform: rotateY(0) scale(1); } }
 @keyframes cardReveal { 0% { transform: rotateY(90deg) scale(.8); opacity: .3; } 60% { transform: rotateY(-12deg) scale(1.08); } 100% { transform: rotateY(0) scale(1); opacity: 1; } }
@@ -1563,6 +1563,15 @@ button {
   justify-content: center;
   padding: 20px;
 }
+
+.modal-close { position: absolute; top: 14px; right: 16px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.06); color: var(--text-secondary); font-size: 1rem; }
+.modal-close:hover { background: rgba(0, 162, 255, .2); color: #fff; }
+.slot-admin-card { width: min(100%, 560px); position: relative; }
+.slot-admin-badge { background: rgba(0, 162, 255, .2); color: var(--blue-glow); }
+.slot-admin-input { width: 100%; min-height: 220px; resize: vertical; margin: 18px 0 10px; padding: 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: rgba(3, 10, 27, .8); color: var(--text-primary); font: inherit; line-height: 1.6; }
+.slot-admin-input:focus { outline: none; border-color: var(--blue-vibrant); box-shadow: 0 0 0 3px rgba(0, 162, 255, .2); }
+.slot-admin-status { min-height: 22px; margin-bottom: 8px; color: var(--blue-glow); font-size: .82rem; text-align: center; }
+.slot-admin-status.error { color: var(--color-danger); }
 
 .modal-card {
   position: relative;
@@ -1796,12 +1805,12 @@ button {
   }
 
   .slot-card-stage {
-    height: 190px;
+    height: 230px;
   }
 
   .slot-draw-card {
-    height: 145px;
-    padding: 16px 12px;
+    height: 175px;
+    padding: 20px 14px;
   }
 
   .wheel-center-hub {
