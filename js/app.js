@@ -59,9 +59,143 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Instância da Roleta
   const roulette = new RouletteWheel('rouletteCanvas');
 
+  // Elementos dos Slots Aleatórios
+  const slotForm = document.getElementById('slotForm');
+  const slotGameInput = document.getElementById('slotGameInput');
+  const slotBulkInput = document.getElementById('slotBulkInput');
+  const btnAddBulkSlots = document.getElementById('btnAddBulkSlots');
+  const btnSpinSlot = document.getElementById('btnSpinSlot');
+  const btnClearSlots = document.getElementById('btnClearSlots');
+  const slotsList = document.getElementById('slotsList');
+  const emptySlotsState = document.getElementById('emptySlotsState');
+  const slotsCountText = document.getElementById('slotsCountText');
+  const slotsCountBadge = document.getElementById('slotsCountBadge');
+  const slotResultLabel = document.getElementById('slotResultLabel');
+  const slotDrawCard = document.getElementById('slotDrawCard');
+  const slotCardGame = document.getElementById('slotCardGame');
+  const slotCardStatus = document.getElementById('slotCardStatus');
+  let slotGames = loadSlotGames();
+  let slotIsSpinning = false;
+
   // Armazenamento das Gorjetas
   let tipsData = loadTips();
   let bankData = loadBankData();
+
+  function loadSlotGames() {
+    try {
+      const saved = localStorage.getItem('barbeiro_slot_games');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed.filter(game => typeof game === 'string' && game.trim()) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveSlotGames() {
+    try {
+      localStorage.setItem('barbeiro_slot_games', JSON.stringify(slotGames));
+    } catch (error) {}
+  }
+
+  function renderSlotGames() {
+    if (!slotsList) return;
+    slotsList.innerHTML = '';
+    slotsCountText.textContent = slotGames.length;
+    slotsCountBadge.textContent = slotGames.length;
+    emptySlotsState.classList.toggle('hidden', slotGames.length > 0);
+
+    slotGames.forEach((game, index) => {
+      const item = document.createElement('div');
+      item.className = 'slot-game-item';
+      item.innerHTML = `<span><b>${String(index + 1).padStart(2, '0')}</b>${escapeHtml(game)}</span><button type="button" class="btn-remove-slot" data-slot-index="${index}" title="Remover ${escapeHtml(game)}"><i class="fa-solid fa-xmark"></i></button>`;
+      slotsList.appendChild(item);
+    });
+
+    slotsList.querySelectorAll('.btn-remove-slot').forEach(button => {
+      button.addEventListener('click', () => {
+        slotGames.splice(Number(button.dataset.slotIndex), 1);
+        saveSlotGames();
+        renderSlotGames();
+      });
+    });
+  }
+
+  function addSlotGames(games) {
+    const newGames = games.map(game => game.trim()).filter(Boolean);
+    slotGames.push(...newGames);
+    saveSlotGames();
+    renderSlotGames();
+  }
+
+  function renderSlotCard(game, status = 'PRONTO PARA SORTEAR') {
+    if (!slotCardGame) return;
+    slotCardGame.textContent = game;
+    slotCardStatus.textContent = status;
+  }
+
+  function runSlotSpin() {
+    if (slotIsSpinning || slotGames.length === 0) {
+      if (!slotGames.length) alert('Adicione pelo menos um jogo antes de sortear.');
+      return;
+    }
+
+    slotIsSpinning = true;
+    btnSpinSlot.disabled = true;
+    slotResultLabel.textContent = 'Escolhendo seu próximo jogo...';
+    slotResultLabel.classList.remove('is-winner');
+    slotDrawCard.classList.remove('is-revealed');
+    slotDrawCard.classList.add('is-flipping');
+
+    const winner = slotGames[Math.floor(Math.random() * slotGames.length)];
+    let gameIndex = 0;
+    const flipInterval = setInterval(() => {
+      slotDrawCard.classList.remove('is-flipping');
+      void slotDrawCard.offsetWidth;
+      slotDrawCard.classList.add('is-flipping');
+      renderSlotCard(slotGames[gameIndex % slotGames.length], 'SORTEANDO...');
+      gameIndex += 1;
+    }, 180);
+
+    setTimeout(() => {
+      clearInterval(flipInterval);
+      slotDrawCard.classList.remove('is-flipping');
+      slotDrawCard.classList.add('is-revealed');
+      renderSlotCard(winner, 'JOGO ESCOLHIDO');
+      slotResultLabel.textContent = `Jogo escolhido: ${winner}`;
+      slotResultLabel.classList.add('is-winner');
+      slotIsSpinning = false;
+      btnSpinSlot.disabled = false;
+      setTimeout(() => slotDrawCard.classList.remove('is-revealed'), 800);
+    }, 2800);
+  }
+
+  if (slotForm) {
+    slotForm.addEventListener('submit', event => {
+      event.preventDefault();
+      addSlotGames([slotGameInput.value]);
+      slotGameInput.value = '';
+      slotGameInput.focus();
+    });
+  }
+
+  if (btnAddBulkSlots) {
+    btnAddBulkSlots.addEventListener('click', () => {
+      addSlotGames(slotBulkInput.value.split(/\r?\n/));
+      slotBulkInput.value = '';
+    });
+  }
+
+  if (btnSpinSlot) btnSpinSlot.addEventListener('click', runSlotSpin);
+  if (btnClearSlots) {
+    btnClearSlots.addEventListener('click', () => {
+      if (!slotGames.length || !confirm('Deseja limpar todos os jogos dos Slots Aleatórios?')) return;
+      slotGames = [];
+      saveSlotGames();
+      renderSlotGames();
+    });
+  }
+  renderSlotGames();
+  renderSlotCard(slotGames.length ? slotGames[0] : 'Adicione seus jogos');
 
   // ================= 1. AUTENTICAÇÃO =================
   function checkSession() {

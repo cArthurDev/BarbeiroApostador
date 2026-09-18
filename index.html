@@ -111,6 +111,11 @@
             <span>Roleta da Sorte</span>
             <span class="badge" id="rouletteCountBadge">0</span>
           </button>
+          <button class="tab-btn" id="tabBtnSlots" data-target="tabSlots" role="tab" aria-selected="false">
+            <i class="fa-solid fa-dice"></i>
+            <span>Slots Aleatórios</span>
+            <span class="badge" id="slotsCountBadge">0</span>
+          </button>
           <button class="tab-btn" id="tabBtnMembers" data-target="tabMembers" role="tab" aria-selected="false">
             <i class="fa-solid fa-users"></i>
             <span>Membros</span>
@@ -372,7 +377,77 @@
         </div>
       </section>
 
-      <!-- ================= ABA 3: MEMBROS CADASTRADOS ================= -->
+      <!-- ================= ABA 3: SLOTS ALEATÓRIOS ================= -->
+      <section id="tabSlots" class="tab-pane">
+        <div class="slots-layout">
+          <div class="glass-card slots-machine-card">
+            <div class="slots-heading">
+              <span class="slots-kicker"><i class="fa-solid fa-wand-magic-sparkles"></i> SORTEIO AO VIVO</span>
+              <h2>Slots Aleatórios</h2>
+              <p>Deixe o cassino escolher qual jogo vem agora.</p>
+            </div>
+
+            <div class="slot-machine" aria-live="polite">
+              <div class="slot-lights" aria-hidden="true"></div>
+              <div class="slot-card-stage">
+                <div class="slot-card-glow" aria-hidden="true"></div>
+                <div class="slot-draw-card" id="slotDrawCard">
+                  <span class="slot-card-suit"><i class="fa-solid fa-dice"></i></span>
+                  <strong id="slotCardGame">Adicione seus jogos</strong>
+                  <small id="slotCardStatus">PRONTO PARA SORTEAR</small>
+                </div>
+              </div>
+              <div class="slot-result-label" id="slotResultLabel">Adicione jogos e puxe a alavanca</div>
+            </div>
+
+            <button type="button" class="btn-slot-spin" id="btnSpinSlot">
+              <i class="fa-solid fa-dice"></i>
+              <span>SORTEAR JOGO</span>
+            </button>
+          </div>
+
+          <div class="glass-card slots-list-card">
+            <div class="card-header justify-between">
+              <div class="flex-align">
+                <div class="header-icon"><i class="fa-solid fa-gamepad"></i></div>
+                <div>
+                  <h2>Jogos do sorteio</h2>
+                  <p>Cadastre um jogo por linha</p>
+                </div>
+              </div>
+              <button type="button" id="btnClearSlots" class="btn-outline-danger btn-sm" title="Limpar jogos">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+
+            <form id="slotForm" class="slot-form">
+              <div class="input-wrapper">
+                <i class="fa-solid fa-plus input-icon"></i>
+                <input type="text" id="slotGameInput" maxlength="60" placeholder="Ex: Sweet Bonanza" required />
+              </div>
+              <button type="submit" class="btn-primary" title="Adicionar jogo">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </form>
+
+            <div class="slots-bulk-tip"><i class="fa-solid fa-lightbulb"></i> Você pode adicionar vários jogos rapidamente, um por linha.</div>
+            <textarea id="slotBulkInput" class="slot-bulk-input" rows="4" placeholder="Ex:&#10;Fortune Tiger&#10;Gates of Olympus&#10;Big Bass Splash"></textarea>
+            <button type="button" id="btnAddBulkSlots" class="btn-secondary btn-block"><i class="fa-solid fa-list"></i><span>Adicionar lista</span></button>
+
+            <div class="slots-list-header">
+              <span>Na máquina (<strong id="slotsCountText">0</strong>)</span>
+              <span class="info-tip">Clique no <i class="fa-solid fa-xmark"></i> para retirar</span>
+            </div>
+            <div id="slotsList" class="slots-list"></div>
+            <div id="emptySlotsState" class="empty-state small">
+              <i class="fa-solid fa-dice empty-icon"></i>
+              <p>Nenhum jogo cadastrado ainda.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= ABA 4: MEMBROS CADASTRADOS ================= -->
       <section id="tabMembers" class="tab-pane">
         <div class="members-dashboard-layout">
           

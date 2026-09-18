@@ -1452,6 +1452,48 @@ button {
   color: var(--text-muted);
 }
 
+/* ================= ABA 3: SLOTS ALEATÓRIOS ================= */
+.slots-layout { display: grid; grid-template-columns: 1fr 400px; gap: 28px; align-items: start; }
+.slots-machine-card { min-height: 620px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(circle at 50% 38%, rgba(0, 136, 255, .22), transparent 42%), var(--bg-card); }
+.slots-heading { text-align: center; margin-bottom: 26px; }
+.slots-heading h2 { font-size: 2rem; margin: 7px 0 4px; }
+.slots-heading p { color: var(--text-secondary); font-size: .9rem; }
+.slots-kicker { color: var(--blue-glow); font-size: .72rem; font-weight: 800; letter-spacing: 1.8px; }
+.slot-machine { width: min(100%, 560px); padding: 34px 28px 28px; border: 2px solid rgba(0, 210, 255, .72); border-radius: 24px; background: linear-gradient(155deg, #101f46, #071126 70%); box-shadow: 0 0 0 8px rgba(0, 0, 0, .18), 0 0 38px rgba(0, 162, 255, .42), inset 0 0 32px rgba(0, 0, 0, .5); position: relative; }
+.slot-lights { height: 10px; border-radius: 99px; margin-bottom: 28px; background: repeating-linear-gradient(90deg, #00d2ff 0 14px, transparent 14px 28px); box-shadow: 0 0 14px #00d2ff; animation: slotLights 1s linear infinite; }
+@keyframes slotLights { to { background-position: 28px 0; } }
+.slot-card-stage { height: 220px; position: relative; display: flex; align-items: center; justify-content: center; perspective: 900px; }
+.slot-card-glow { position: absolute; width: 190px; height: 190px; border-radius: 50%; background: rgba(0, 162, 255, .35); filter: blur(28px); animation: cardGlow 1.8s ease-in-out infinite alternate; }
+.slot-draw-card { position: relative; z-index: 1; width: min(100%, 330px); height: 170px; padding: 24px 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; border: 2px solid #00d2ff; border-radius: 18px; background: linear-gradient(145deg, #0a2452, #071126 72%); color: #fff; box-shadow: 0 0 28px rgba(0, 162, 255, .6), inset 0 0 24px rgba(0, 210, 255, .1); transform-style: preserve-3d; }
+.slot-draw-card.is-flipping { animation: cardFlip .18s ease-in-out; }
+.slot-draw-card.is-revealed { animation: cardReveal .8s cubic-bezier(.2, .8, .2, 1); }
+.slot-card-suit { color: var(--blue-glow); font-size: 1.65rem; }
+.slot-draw-card strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-family: 'Outfit', sans-serif; font-size: clamp(1.15rem, 3vw, 1.7rem); }
+.slot-draw-card small { color: var(--blue-glow); font-size: .68rem; font-weight: 800; letter-spacing: 1.6px; }
+@keyframes cardFlip { 0% { transform: rotateY(0) scale(1); } 50% { transform: rotateY(90deg) scale(.92); filter: brightness(1.6); } 100% { transform: rotateY(0) scale(1); } }
+@keyframes cardReveal { 0% { transform: rotateY(90deg) scale(.8); opacity: .3; } 60% { transform: rotateY(-12deg) scale(1.08); } 100% { transform: rotateY(0) scale(1); opacity: 1; } }
+@keyframes cardGlow { to { transform: scale(1.25); opacity: .7; } }
+.slot-result-label { min-height: 26px; margin-top: 22px; color: var(--text-secondary); text-align: center; font-size: .9rem; }
+.slot-result-label.is-winner { color: var(--blue-glow); font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 800; animation: winnerPulse .7s ease-out; }
+@keyframes winnerPulse { 50% { transform: scale(1.05); text-shadow: 0 0 18px rgba(0, 210, 255, .9); } }
+.btn-slot-spin { width: min(100%, 360px); margin-top: 30px; padding: 16px 24px; border: 1px solid rgba(255, 255, 255, .3); border-radius: var(--radius-md); background: linear-gradient(135deg, #00bfff, #0055d4); color: #ffffff; box-shadow: 0 0 28px rgba(0, 162, 255, .48); font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 900; letter-spacing: .7px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn-slot-spin:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 36px rgba(0, 210, 255, .8); }
+.btn-slot-spin:disabled { cursor: not-allowed; opacity: .65; }
+.slot-form { display: flex; gap: 8px; margin-bottom: 12px; }
+.slot-form .input-wrapper { flex: 1; }
+.slot-form button { width: 46px; padding: 0; }
+.slots-bulk-tip { margin: 12px 0 8px; color: var(--text-muted); font-size: .75rem; }
+.slot-bulk-input { width: 100%; resize: vertical; min-height: 92px; padding: 12px 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: rgba(6, 14, 32, .7); color: var(--text-primary); font: inherit; font-size: .86rem; }
+.slot-bulk-input:focus { outline: none; border-color: var(--blue-vibrant); box-shadow: 0 0 0 3px rgba(0, 162, 255, .2); }
+.slots-list-header { display: flex; justify-content: space-between; margin: 22px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); font-size: .82rem; }
+.slots-list-header strong { color: #fff; }
+.slots-list { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
+.slot-game-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: rgba(7, 16, 38, .8); }
+.slot-game-item span { display: flex; align-items: center; gap: 10px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slot-game-item b { color: var(--blue-glow); font-size: .72rem; }
+.btn-remove-slot { flex: 0 0 auto; padding: 4px 6px; background: transparent; color: var(--text-muted); }
+.btn-remove-slot:hover { color: var(--color-danger); }
+
 .participant-chip {
   display: flex;
   align-items: center;
@@ -1693,6 +1735,10 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .slots-layout {
+    grid-template-columns: 1fr;
+  }
+
   .battles-layout {
     grid-template-columns: 1fr;
   }
@@ -1743,6 +1789,19 @@ button {
   #rouletteCanvas {
     width: 320px !important;
     height: 320px !important;
+  }
+
+  .slot-machine {
+    padding: 24px 14px 20px;
+  }
+
+  .slot-card-stage {
+    height: 190px;
+  }
+
+  .slot-draw-card {
+    height: 145px;
+    padding: 16px 12px;
   }
 
   .wheel-center-hub {
