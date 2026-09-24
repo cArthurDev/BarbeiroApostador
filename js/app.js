@@ -730,6 +730,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const battlePickerHint = document.getElementById('battlePickerHint');
   const battleEmptyState = document.getElementById('battleEmptyState');
   const btnStartBattle = document.getElementById('btnStartBattle');
+  const btnCancelBattle = document.getElementById('btnCancelBattle');
   const battleSetup = document.getElementById('battleSetup');
   const battleChampionState = document.getElementById('battleChampionState');
   const battleChampionName = document.getElementById('battleChampionName');
@@ -743,6 +744,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   let battleRounds = [];
   let battleCurrentRound = 0;
   let battleChampion = null;
+
+  function updateBattleCancelButton() {
+    if (!btnCancelBattle) return;
+    btnCancelBattle.classList.toggle('hidden', !battleRounds.length || Boolean(battleChampion));
+  }
 
   function saveBattleState() {
     try {
@@ -789,6 +795,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       battleChampion = saved.championId ? memberById.get(saved.championId) || null : null;
       battleSetup.classList.toggle('hidden', Boolean(battleRounds.length));
       battleChampionState.classList.toggle('hidden', !battleChampion);
+      updateBattleCancelButton();
       if (battleChampion) {
         battleChampionName.textContent = battleChampion.name;
         battleRoundTitle.textContent = 'Campeão definido';
@@ -956,6 +963,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     battleChampion = null;
     battleSetup.classList.add('hidden');
     battleChampionState.classList.add('hidden');
+    updateBattleCancelButton();
     saveBattleState();
     renderBattleBracket();
   }
@@ -1004,6 +1012,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     battleSetup.classList.add('hidden');
     battleChampionState.classList.remove('hidden');
     battleChampionState.classList.add('champion-reveal');
+    updateBattleCancelButton();
     saveBattleState();
   }
 
@@ -1015,6 +1024,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     localStorage.removeItem('barbeiro_battle');
     battleChampionState.classList.add('hidden');
     battleSetup.classList.remove('hidden');
+    updateBattleCancelButton();
     battleRoundTitle.textContent = 'Aguardando participantes';
     battleRoundBadge.textContent = 'MATA-MATA';
     battleBracket.innerHTML = '<div class="battle-placeholder"><i class="fa-solid fa-shield-halved"></i><p>Escolha os participantes para gerar a chave.</p></div>';
@@ -1023,6 +1033,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (battleParticipantCount) battleParticipantCount.addEventListener('change', renderBattlePicker);
   if (btnStartBattle) btnStartBattle.addEventListener('click', startBattle);
+  if (btnCancelBattle) btnCancelBattle.addEventListener('click', () => {
+    if (!confirm('Excluir a batalha em andamento?\n\nOs confrontos e resultados registrados serão apagados.')) return;
+    resetBattle();
+  });
   if (btnNewBattle) btnNewBattle.addEventListener('click', resetBattle);
 
   /** Mostra skeleton de carregamento no grid de membros */

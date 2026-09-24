@@ -2532,6 +2532,19 @@ button {
   background: linear-gradient(145deg, rgba(13, 25, 54, 0.86), rgba(7, 14, 32, 0.78));
 }
 
+.battle-cancel-button {
+  width: 100%;
+  margin-top: 16px;
+  color: var(--color-danger);
+  border-color: rgba(255, 51, 102, 0.4);
+}
+
+.battle-cancel-button:hover {
+  color: #fff;
+  background: rgba(255, 51, 102, 0.14);
+  border-color: var(--color-danger);
+}
+
 .battle-bracket-header {
   display: flex;
   justify-content: space-between;
@@ -3381,5 +3394,4 @@ button {
 .skeleton-line.short {
   width: 55%;
 }
-
 
