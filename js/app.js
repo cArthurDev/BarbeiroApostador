@@ -762,7 +762,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         championId: battleChampion ? battleChampion.id : null,
         rounds: battleRounds.map(round => round.map(match => ({
           participantIds: match.map(participant => participant.id),
-          winnerId: match.winner ? match.winner.id : null
+          winnerId: match.winner ? match.winner.id : null,
+          bonusValues: [match.bonusValues?.[0] ?? null, match.bonusValues?.[1] ?? null]
         })))
       }));
     } catch (error) {
@@ -781,6 +782,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (participants.length !== 2) return null;
         const restoredMatch = [participants[0], participants[1]];
         restoredMatch.winner = match.winnerId ? memberById.get(match.winnerId) : null;
+        restoredMatch.bonusValues = Array.isArray(match.bonusValues) ? match.bonusValues.slice(0, 2) : [null, null];
         return restoredMatch;
       }).filter(Boolean));
 
@@ -916,6 +918,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     battleBracket.innerHTML = '';
 
     matches.forEach((match, index) => {
+      const bonusValues = Array.isArray(match.bonusValues) ? match.bonusValues : [null, null];
       const card = document.createElement('div');
       card.className = 'battle-match';
       card.innerHTML = `
@@ -933,17 +936,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             <i class="fa-solid fa-chevron-right"></i>
           </button>
         </div>
-        <p class="battle-confirm-hint"><i class="fa-solid fa-hand-pointer"></i> Clique no vencedor e confirme o avanço</p>
+        <div class="battle-bonus-fields">
+          <label class="battle-bonus-field"><span>Bônus de ${escapeHtml(match[0].name)}</span><div><span>R$</span><input class="battle-bonus-input" data-bonus-index="0" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00" value="${escapeHtml(String(bonusValues[0] ?? ''))}"></div></label>
+          <label class="battle-bonus-field"><span>Bônus de ${escapeHtml(match[1].name)}</span><div><span>R$</span><input class="battle-bonus-input" data-bonus-index="1" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00" value="${escapeHtml(String(bonusValues[1] ?? ''))}"></div></label>
+        </div>
+        <button type="button" class="btn-secondary btn-battle-bonus"><i class="fa-solid fa-scale-balanced"></i><span>Avançar maior bônus</span></button>
+        <p class="battle-confirm-hint"><i class="fa-solid fa-hand-pointer"></i> Informe os bônus e avance o maior valor, ou selecione o vencedor manualmente.</p>
       `;
       card.querySelectorAll('.battle-fighter').forEach(button => {
         button.addEventListener('click', () => advanceBattle(index, Number(button.dataset.winner)));
       });
+      card.querySelectorAll('.battle-bonus-input').forEach(input => {
+        input.addEventListener('input', () => {
+          const value = Number(input.value);
+          match.bonusValues = Array.isArray(match.bonusValues) ? match.bonusValues : [null, null];
+          match.bonusValues[Number(input.dataset.bonusIndex)] = input.value === '' || value < 0 || !Number.isFinite(value) ? null : value;
+          saveBattleState();
+        });
+      });
+      card.querySelector('.btn-battle-bonus').addEventListener('click', () => advanceBattleByBonus(index));
       if (match.winner) {
         const winnerIndex = match[0].id === match.winner.id ? 0 : 1;
         const winnerButton = card.querySelector(`[data-winner="${winnerIndex}"]`);
         if (winnerButton) winnerButton.classList.add('winner-selected');
         card.querySelectorAll('.battle-fighter').forEach(button => {
           button.disabled = true;
+        });
+        card.querySelectorAll('.battle-bonus-input, .btn-battle-bonus').forEach(element => {
+          element.disabled = true;
         });
       }
       battleBracket.appendChild(card);
@@ -966,6 +986,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateBattleCancelButton();
     saveBattleState();
     renderBattleBracket();
+  }
+
+  function advanceBattleByBonus(matchIndex) {
+    const match = battleRounds[battleCurrentRound][matchIndex];
+    const bonusValues = Array.isArray(match.bonusValues) ? match.bonusValues : [];
+    const firstBonus = Number(bonusValues[0]);
+    const secondBonus = Number(bonusValues[1]);
+
+    if (bonusValues[0] === null || bonusValues[0] === undefined || bonusValues[1] === null || bonusValues[1] === undefined || !Number.isFinite(firstBonus) || !Number.isFinite(secondBonus) || firstBonus < 0 || secondBonus < 0) {
+      alert('Informe um valor de bônus válido para os dois participantes.');
+      return;
+    }
+    if (firstBonus === secondBonus) {
+      alert('Os bônus empataram. Escolha o vencedor manualmente.');
+      return;
+    }
+    advanceBattle(matchIndex, firstBonus > secondBonus ? 0 : 1);
   }
 
   function advanceBattle(matchIndex, winnerIndex) {

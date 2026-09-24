@@ -2691,6 +2691,70 @@ button {
   font: 800 0.62rem 'Outfit', sans-serif;
 }
 
+.battle-bonus-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.battle-bonus-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.battle-bonus-field > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.battle-bonus-field > div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border: 1px solid rgba(82, 130, 210, 0.28);
+  border-radius: var(--radius-sm);
+  background: rgba(7, 18, 42, 0.72);
+  color: var(--accent-gold);
+  font-weight: 800;
+}
+
+.battle-bonus-input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.battle-bonus-input:focus {
+  color: #fff;
+}
+
+.btn-battle-bonus {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 10px;
+  color: #dcecff;
+  font-size: 0.76rem;
+}
+
+.btn-battle-bonus:disabled,
+.battle-bonus-input:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
 .battle-confirm-hint {
   margin-top: 10px;
   color: var(--text-muted);
