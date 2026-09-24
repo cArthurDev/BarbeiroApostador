@@ -1093,7 +1093,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     filteredMembers.forEach(member => {
       const card = document.createElement('div');
-      card.className = 'glass-card member-card';
+      const isGoldMember = (member.twitch || '').trim().replace(/^@/, '').toLowerCase() === 'carthurdevv';
+      card.className = `glass-card member-card${isGoldMember ? ' member-card--gold' : ''}`;
       card.setAttribute('data-id', member.id);
 
       const initials = getInitials(member.name);

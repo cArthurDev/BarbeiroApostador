@@ -2052,6 +2052,45 @@ button {
   box-shadow: 0 14px 35px rgba(0, 5, 20, 0.8), 0 0 20px rgba(0, 162, 255, 0.25);
 }
 
+.member-card--gold {
+  background: linear-gradient(145deg, rgba(92, 63, 8, 0.94), rgba(27, 20, 5, 0.92));
+  border-color: rgba(255, 201, 64, 0.68);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(255, 190, 35, 0.2);
+}
+
+.member-card--gold::before {
+  height: 3px;
+  background: linear-gradient(90deg, #b77908, #ffe89a, #d49412);
+  opacity: 1;
+}
+
+.member-card--gold:hover {
+  border-color: #ffe08a;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6), 0 0 28px rgba(255, 190, 35, 0.4);
+}
+
+.member-card--gold .member-avatar {
+  background: linear-gradient(135deg, #9f6808, #edbd36);
+  border-color: #ffe08a;
+  color: #291900;
+  box-shadow: 0 0 16px rgba(255, 204, 62, 0.48);
+}
+
+.member-card--gold .member-twitch-badge {
+  background: rgba(255, 199, 55, 0.16);
+  border-color: rgba(255, 220, 126, 0.66);
+  color: #ffe89a;
+}
+
+.member-card--gold .member-card-body {
+  background: rgba(58, 38, 3, 0.44);
+  border-color: rgba(255, 220, 126, 0.18);
+}
+
+.member-card--gold .info-row-icon {
+  color: #ffd65e;
+}
+
 .member-card-header {
   display: flex;
   align-items: center;
@@ -3394,4 +3433,3 @@ button {
 .skeleton-line.short {
   width: 55%;
 }
-
