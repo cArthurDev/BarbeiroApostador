@@ -1131,7 +1131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     filteredMembers.forEach(member => {
       const card = document.createElement('div');
       const isGoldMember = (member.twitch || '').trim().replace(/^@/, '').toLowerCase() === 'carthurdevv';
-      card.className = `glass-card member-card${isGoldMember ? ' member-card--gold' : ''}`;
+      card.className = `glass-card member-card${isGoldMember ? ' member-card--gold' : ''}${member.duplicateIp ? ' member-card--duplicate-ip' : ''}`;
       card.setAttribute('data-id', member.id);
 
       const initials = getInitials(member.name);
@@ -1150,6 +1150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         </div>
         <div class="member-card-body">
+          ${member.duplicateIp ? '<div class="member-ip-warning" role="status"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>Mais de um cadastro no mesmo IP</span></div>' : ''}
           <div class="member-info-row" title="E-mail">
             <i class="fa-regular fa-envelope info-row-icon"></i>
             <span class="info-row-text">${escapeHtml(maskEmail(member.email))}</span>

@@ -2091,6 +2091,48 @@ button {
   color: #ffd65e;
 }
 
+.member-card.member-card--duplicate-ip {
+  background: linear-gradient(145deg, rgba(112, 20, 30, 0.96), rgba(48, 10, 18, 0.96));
+  border-color: #ef5350;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(239, 83, 80, 0.25);
+}
+
+.member-card.member-card--duplicate-ip:hover {
+  border-color: #ff8a80;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6), 0 0 28px rgba(239, 83, 80, 0.4);
+}
+
+.member-card--duplicate-ip::before {
+  background: linear-gradient(90deg, #ef5350, #ff8a80);
+  opacity: 1;
+}
+
+.member-card--duplicate-ip .member-avatar {
+  background: #a52835;
+  border-color: #ff8a80;
+  color: #fff;
+  box-shadow: 0 0 16px rgba(239, 83, 80, 0.3);
+}
+
+.member-card--duplicate-ip .member-twitch-badge,
+.member-card--duplicate-ip .info-row-icon {
+  color: #ffb4ab;
+}
+
+.member-card--duplicate-ip .member-card-body {
+  background: rgba(64, 10, 18, 0.5);
+  border-color: rgba(255, 138, 128, 0.25);
+}
+
+.member-ip-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffb4ab;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .member-card-header {
   display: flex;
   align-items: center;

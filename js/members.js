@@ -59,6 +59,7 @@ function _normalizeRow(row) {
     email: row.email,
     twitch: row.twitch,
     normalizedTwitch: row.twitch_norm,
+    duplicateIp: row.ip_duplicate === true,
     createdAt: row.created_at,
     displayDate: _formatDisplayDate(row.created_at)
   };
